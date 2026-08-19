@@ -1384,19 +1384,14 @@ function initEmployerForm() {
   });
 }
 
-// 7. FAQ Accordion
+// 7. FAQ Accordion (Resilient Event Delegation)
 function initFaqAccordion() {
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach(item => {
-    const questionBtn = item.querySelector('.faq-question');
-    if (questionBtn) {
-      questionBtn.addEventListener('click', () => {
-        const isActive = item.classList.contains('active');
-        faqItems.forEach(i => i.classList.remove('active'));
-        if (!isActive) {
-          item.classList.add('active');
-        }
-      });
+  document.addEventListener('click', (e) => {
+    const questionBtn = e.target.closest('.faq-question');
+    if (!questionBtn) return;
+    
+    if (typeof window.toggleFaq === 'function') {
+      window.toggleFaq(questionBtn);
     }
   });
 }

@@ -264,7 +264,7 @@ function renderFaqs() {
 
   container.innerHTML = CEGS_DATA.faqs.map((f, index) => `
     <div class="faq-item ${index === 0 ? 'active' : ''}">
-      <button class="faq-question">
+      <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="${index === 0 ? 'true' : 'false'}">
         <span>${f.q}</span>
         <div class="faq-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -276,3 +276,22 @@ function renderFaqs() {
     </div>
   `).join('');
 }
+
+window.toggleFaq = function(btn) {
+  const item = btn.closest('.faq-item');
+  if (!item) return;
+  const isAlreadyActive = item.classList.contains('active');
+
+  // Close all open FAQs
+  document.querySelectorAll('.faq-item').forEach(i => {
+    i.classList.remove('active');
+    const qBtn = i.querySelector('.faq-question');
+    if (qBtn) qBtn.setAttribute('aria-expanded', 'false');
+  });
+
+  // If not active, open clicked one
+  if (!isAlreadyActive) {
+    item.classList.add('active');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+};
