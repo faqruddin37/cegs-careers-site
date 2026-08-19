@@ -1003,13 +1003,13 @@ let autoCandidatePromptShown = false;
 let autoWhatsAppPromptShown = false;
 
 function initAutoLeadPopups() {
-  // 1. Auto-open Candidate Form after 5 seconds of opening the website
+  // 1. Auto-open General Candidate Application Form after 5 seconds of opening the website
   setTimeout(() => {
     const overlay = document.getElementById('modalOverlay');
     const isModalOpen = overlay && overlay.classList.contains('active');
     if (!autoCandidatePromptShown && !isModalOpen) {
       autoCandidatePromptShown = true;
-      openCandidateJobWizard(1);
+      openJobApplyModal(null);
     }
   }, 5000);
 }
