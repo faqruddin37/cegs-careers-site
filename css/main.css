@@ -2332,3 +2332,296 @@ textarea.form-control {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Multi-Channel Contact & WhatsApp Chat Widget (Theme Aligned)
+   ========================================================================== */
+.cegs-floating-widget-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  font-family: var(--font-primary);
+}
+
+/* Speed Dial Actions */
+.widget-speed-dial {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(15px) scale(0.9);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.widget-speed-dial.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.speed-dial-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 8px 10px;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 6px 20px rgba(15, 28, 45, 0.12);
+  color: var(--text-heading);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.speed-dial-btn:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 8px 24px rgba(15, 28, 45, 0.18);
+  border-color: var(--color-primary);
+}
+
+.speed-dial-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.speed-dial-icon.phone { background: #0f1c2d; }
+.speed-dial-icon.whatsapp { background: #25d366; }
+.speed-dial-icon.email { background: #f56a00; }
+
+/* Interactive WhatsApp Chat Box */
+.whatsapp-chat-box {
+  position: absolute;
+  bottom: 74px;
+  right: 0;
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px -10px rgba(15, 28, 45, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  animation: waBoxPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  z-index: 9999;
+}
+
+@keyframes waBoxPop {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.whatsapp-chat-box.open {
+  display: flex;
+}
+
+.whatsapp-chat-header {
+  background: linear-gradient(135deg, #0d5e72 0%, #073b49 100%);
+  color: #ffffff;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.whatsapp-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.whatsapp-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.whatsapp-header-text h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.whatsapp-header-text span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.whatsapp-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.whatsapp-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.whatsapp-chat-body {
+  padding: 18px 16px;
+  background: #f8fafc;
+  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 16px 16px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.whatsapp-message-bubble {
+  background: #ffffff;
+  border-radius: 0 14px 14px 14px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(15, 28, 45, 0.06);
+  max-width: 90%;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  line-height: 1.45;
+  position: relative;
+}
+
+.whatsapp-message-time {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.whatsapp-input-wrap {
+  padding: 12px 14px;
+  background: #ffffff;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.whatsapp-text-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-light);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  background: #f8fafc;
+  transition: all var(--transition-fast);
+}
+
+.whatsapp-text-input:focus {
+  border-color: #25d366;
+  background: #ffffff;
+}
+
+.whatsapp-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #25d366;
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.35);
+  flex-shrink: 0;
+}
+
+.whatsapp-send-btn:hover {
+  background: #20ba5a;
+  transform: scale(1.05);
+}
+
+/* Floating Launcher Button */
+.widget-launcher-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d5e72 0%, #084352 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 28px rgba(13, 94, 114, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.widget-launcher-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 34px rgba(13, 94, 114, 0.5);
+}
+
+.widget-launcher-btn .icon-open,
+.widget-launcher-btn .icon-close {
+  position: absolute;
+  transition: all 0.25s ease;
+}
+
+.widget-launcher-btn .icon-close {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.7);
+}
+
+.widget-launcher-btn.active .icon-open {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.7);
+}
+
+.widget-launcher-btn.active .icon-close {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+.widget-launcher-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #25d366;
+  border: 2px solid #ffffff;
+}

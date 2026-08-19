@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModals();
   initCostCalculator();
   initCalendarBooking();
+  initAutoLeadPopups();
 });
 
 // Toast notification helper
@@ -997,6 +998,31 @@ function initModals() {
   });
 }
 
+// State for automated lead popups
+let autoCandidatePromptShown = false;
+let autoWhatsAppPromptShown = false;
+
+function initAutoLeadPopups() {
+  // 1. Auto-open Candidate Form after 5 seconds of opening the website
+  setTimeout(() => {
+    const overlay = document.getElementById('modalOverlay');
+    const isModalOpen = overlay && overlay.classList.contains('active');
+    if (!autoCandidatePromptShown && !isModalOpen) {
+      autoCandidatePromptShown = true;
+      openCandidateJobWizard(1);
+    }
+  }, 5000);
+}
+
+function triggerWhatsAppPromptAfterDelay() {
+  if (!autoWhatsAppPromptShown) {
+    autoWhatsAppPromptShown = true;
+    setTimeout(() => {
+      toggleWhatsAppChat(true);
+    }, 5000);
+  }
+}
+
 function openModal(htmlContent) {
   const overlay = document.getElementById('modalOverlay');
   const body = document.getElementById('modalBody');
@@ -1013,7 +1039,69 @@ function closeModal() {
     overlay.classList.remove('active');
     document.body.style.overflow = 'auto';
   }
+
+  // After user closes the form, trigger WhatsApp appearance after 5 seconds
+  triggerWhatsAppPromptAfterDelay();
 }
+
+// Multi-Channel Contact Widget & WhatsApp Chat Controller
+window.toggleFloatingWidget = function() {
+  const launcher = document.getElementById('widgetLauncherBtn');
+  const speedDial = document.getElementById('widgetSpeedDial');
+  const chatBox = document.getElementById('whatsappChatBox');
+
+  if (chatBox && chatBox.classList.contains('open')) {
+    chatBox.classList.remove('open');
+    if (launcher) launcher.classList.remove('active');
+    return;
+  }
+
+  if (speedDial) {
+    const isActive = speedDial.classList.contains('active');
+    if (isActive) {
+      speedDial.classList.remove('active');
+      if (launcher) launcher.classList.remove('active');
+    } else {
+      speedDial.classList.add('active');
+      if (launcher) launcher.classList.add('active');
+    }
+  }
+};
+
+window.toggleWhatsAppChat = function(openState) {
+  const chatBox = document.getElementById('whatsappChatBox');
+  const speedDial = document.getElementById('widgetSpeedDial');
+  const launcher = document.getElementById('widgetLauncherBtn');
+
+  if (!chatBox) return;
+
+  if (openState) {
+    if (speedDial) speedDial.classList.remove('active');
+    chatBox.classList.add('open');
+    if (launcher) launcher.classList.add('active');
+    const input = document.getElementById('waWidgetInput');
+    if (input) setTimeout(() => input.focus(), 300);
+  } else {
+    chatBox.classList.remove('open');
+    if (launcher) launcher.classList.remove('active');
+  }
+};
+
+window.handleWhatsAppSend = function(e) {
+  e.preventDefault();
+  const input = document.getElementById('waWidgetInput');
+  const msg = input ? input.value.trim() : '';
+  const phone = '919886470404';
+
+  const defaultMsg = "Hi CEGS Team, I would like to inquire about career vacancies and recruitment services.";
+  const finalMsg = msg || defaultMsg;
+  const encoded = encodeURIComponent(finalMsg);
+  
+  window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+  
+  if (input) input.value = '';
+  toggleWhatsAppChat(false);
+};
 
 // Job Details Modal
 window.openJobDetailsModal = function(jobId) {
