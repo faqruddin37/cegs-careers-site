@@ -1384,14 +1384,7 @@ function initEmployerForm() {
   });
 }
 
-// 7. FAQ Accordion (Resilient Event Delegation)
+// 7. FAQ Accordion initialization (handled directly via toggleFaq in app.js)
 function initFaqAccordion() {
-  document.addEventListener('click', (e) => {
-    const questionBtn = e.target.closest('.faq-question');
-    if (!questionBtn) return;
-    
-    if (typeof window.toggleFaq === 'function') {
-      window.toggleFaq(questionBtn);
-    }
-  });
+  // Handled cleanly via window.toggleFaq
 }

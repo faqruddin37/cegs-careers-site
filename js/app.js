@@ -277,7 +277,11 @@ function renderFaqs() {
   `).join('');
 }
 
-window.toggleFaq = function(btn) {
+window.toggleFaq = function(btn, e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   const item = btn.closest('.faq-item');
   if (!item) return;
   const isAlreadyActive = item.classList.contains('active');

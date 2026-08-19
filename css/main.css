@@ -1662,6 +1662,15 @@ textarea.form-control {
   transition: all var(--transition-fast);
 }
 
+.faq-item:hover {
+  border-color: #cbd5e1;
+}
+
+.faq-item.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 16px rgba(13, 94, 114, 0.08);
+}
+
 .faq-question {
   width: 100%;
   padding: 1.25rem 1.5rem;
@@ -1675,18 +1684,23 @@ textarea.form-control {
   color: var(--text-heading);
   cursor: pointer;
   text-align: left;
+  gap: 1rem;
+}
+
+.faq-item.active .faq-question {
+  color: var(--color-primary);
 }
 
 .faq-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--bg-page);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-primary);
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
   flex-shrink: 0;
 }
 
@@ -1706,6 +1720,18 @@ textarea.form-control {
 
 .faq-item.active .faq-answer {
   display: block;
+  animation: faqFadeIn 0.25s ease;
+}
+
+@keyframes faqFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================================
