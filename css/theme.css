@@ -1,0 +1,260 @@
+:root {
+  /* Brand Colors inspired by CEGS HRMS */
+  --color-primary: #0d5e72;
+  --color-primary-hover: #094757;
+  --color-primary-light: #e7f4f7;
+  --color-primary-gradient: linear-gradient(135deg, #0d5e72 0%, #1565c0 100%);
+  
+  --color-secondary-blue: #1565c0;
+  --color-secondary-blue-hover: #0d47a1;
+  --color-secondary-blue-light: #e8f0fe;
+  
+  --color-accent-blue-gradient: linear-gradient(135deg, #1264a3 0%, #3558d6 100%);
+  
+  --color-orange: #f56a00;
+  --color-orange-hover: #dc5d00;
+  --color-orange-light: #fff3eb;
+  --color-orange-border: #ffd8bf;
+  
+  --color-green: #0bb379;
+  --color-green-light: #e6fbf3;
+  
+  --color-red: #ef4444;
+  --color-red-light: #fee2e2;
+  
+  /* Neutrals & Surfaces */
+  --bg-page: #f4f7fb;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f8fafc;
+  --bg-input: #ffffff;
+  
+  --text-main: #192a3e;
+  --text-heading: #0f1c2d;
+  --text-muted: #627d98;
+  --text-subtle: #829ab1;
+  --text-inverse: #ffffff;
+  
+  --border-light: #e2e8f0;
+  --border-subtle: #edf2f7;
+  --border-active: #0d5e72;
+  
+  /* Typography */
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+  
+  /* Shadows matching HRMS reference */
+  --shadow-subtle: 0 2px 6px rgba(15, 28, 45, 0.04);
+  --shadow-card: 0 10px 25px -5px rgba(15, 28, 45, 0.05), 0 8px 10px -6px rgba(15, 28, 45, 0.03);
+  --shadow-card-hover: 0 20px 35px -8px rgba(13, 94, 114, 0.12), 0 10px 15px -5px rgba(15, 28, 45, 0.04);
+  --shadow-modal: 0 25px 50px -12px rgba(15, 28, 45, 0.25);
+  --shadow-blue-glow: 0 10px 20px -3px rgba(21, 101, 192, 0.3);
+  --shadow-teal-glow: 0 10px 20px -3px rgba(13, 94, 114, 0.25);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2.75rem; }
+h2 { font-size: 2.15rem; }
+h3 { font-size: 1.45rem; }
+h4 { font-size: 1.15rem; }
+
+p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Button & Pill Utilities */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-teal-glow);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -4px rgba(13, 94, 114, 0.35);
+}
+
+.btn-gradient {
+  background: var(--color-accent-blue-gradient);
+  color: #ffffff;
+  box-shadow: var(--shadow-blue-glow);
+}
+
+.btn-gradient:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 25px -4px rgba(21, 101, 192, 0.4);
+}
+
+.btn-outline {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.btn-orange {
+  background-color: var(--color-orange-light);
+  color: var(--color-orange);
+  border: 1px solid var(--color-orange-border);
+}
+
+.btn-orange:hover {
+  background-color: var(--color-orange);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn-lg {
+  padding: 0.95rem 2rem;
+  font-size: 1.05rem;
+}
+
+/* Card utility */
+.cegs-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+  transition: all var(--transition-normal);
+}
+
+.cegs-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: #dbeafe;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.badge-teal {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.badge-blue {
+  background-color: var(--color-secondary-blue-light);
+  color: var(--color-secondary-blue);
+}
+
+.badge-green {
+  background-color: var(--color-green-light);
+  color: var(--color-green);
+}
+
+.badge-orange {
+  background-color: var(--color-orange-light);
+  color: var(--color-orange);
+}
+
+/* Status Indicator Dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(11, 179, 121, 0.2);
+}
