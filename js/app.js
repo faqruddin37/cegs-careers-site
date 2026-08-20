@@ -132,6 +132,11 @@ function initRouter() {
       if (homePage) homePage.classList.add('active-page');
     }
 
+    // Refresh live jobs from MySQL when entering careers page
+    if (cleanRoute === 'careers' && typeof window.fetchLiveDbJobs === 'function') {
+      window.fetchLiveDbJobs();
+    }
+
     // 2. Update active navbar state
     document.querySelectorAll('.nav-link').forEach(link => {
       const href = link.getAttribute('href');

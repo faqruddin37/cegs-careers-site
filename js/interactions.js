@@ -892,57 +892,99 @@ function renderConsultantWizardModal() {
 let currentJobCategory = 'all';
 let currentSearchQuery = '';
 
-function fetchLiveDbJobs() {
-  fetch('api/jobs.php')
+window.fetchLiveDbJobs = function() {
+  fetch('api/jobs.php?t=' + Date.now())
     .then(res => {
       if (!res.ok) throw new Error('API offline');
       return res.json();
     })
     .then(data => {
       if (data && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
-        CEGS_DATA.liveJobs = data.data.map(item => ({
-          id: item.id.toString(),
-          title: item.job_role,
-          company: item.company_name,
-          department: "Staffing",
-          type: item.shift_details || "Full-Time",
-          location: item.location,
-          experience: item.qualification,
-          salary: item.salary,
-          posted: formatRelativeDateStr(item.posted_date),
-          tags: [item.qualification, item.language_required, item.shift_details, item.cab_facility ? `🚗 ${item.cab_facility}` : null].filter(Boolean),
-          description: item.additional_notes || `Opportunity at ${item.company_name} for ${item.job_role}. Requires ${item.qualification} and ${item.language_required}.`,
-          requirements: [
-            `Educational Qualification: ${item.qualification}`,
-            `Language Required: ${item.language_required}`,
-            `Shift Schedule: ${item.shift_details}`,
-            item.cab_facility ? `Transport: ${item.cab_facility}` : null
-          ].filter(Boolean)
-        }));
+        CEGS_DATA.liveJobs = data.data.map(item => {
+          // Detect department & badge theme
+          const text = `${item.job_role} ${item.company_name} ${item.additional_notes || ''}`.toLowerCase();
+          let dept = "Staffing & Careers";
+          let badgeColor = "teal";
+
+          if (/tech|software|developer|engineer|it|web|cloud|data|frontend|backend|full stack|react|node/i.test(text)) {
+            dept = "Technology";
+            badgeColor = "blue";
+          } else if (/hr|staffing|talent|human resources|recruitment|recruiter|hrbp/i.test(text)) {
+            dept = "Human Resources";
+            badgeColor = "teal";
+          } else if (/bpo|sales|support|customer|voice|telecaller|representative|executive|inside sales/i.test(text)) {
+            dept = "Inside Sales & BPO";
+            badgeColor = "orange";
+          } else if (/payroll|finance|account|compliance|tax|statutory/i.test(text)) {
+            dept = "Payroll & Finance";
+            badgeColor = "green";
+          }
+
+          // Filter tags - hide cab if empty or 'no'
+          const tags = [
+            item.qualification ? `🎓 ${item.qualification}` : null,
+            item.language_required ? `🗣️ ${item.language_required}` : null,
+            item.shift_details ? `⏰ ${item.shift_details}` : null
+          ];
+
+          const cab = (item.cab_facility || '').trim();
+          if (cab && !/^no$|^none$/i.test(cab)) {
+            tags.push(`🚗 Cab: ${cab}`);
+          }
+
+          // Format Salary
+          let salaryFormatted = item.salary || '';
+          if (salaryFormatted && !salaryFormatted.includes('₹') && !salaryFormatted.toLowerCase().includes('lpa')) {
+            salaryFormatted = `₹${salaryFormatted}`;
+          }
+
+          return {
+            id: item.id.toString(),
+            title: item.job_role,
+            company: item.company_name,
+            department: dept,
+            badgeColor: badgeColor,
+            type: item.shift_details || "Full-Time",
+            location: item.location,
+            experience: item.qualification,
+            salary: salaryFormatted,
+            posted: formatRelativeDateStr(item.posted_date),
+            tags: tags.filter(Boolean),
+            description: item.additional_notes || `Exciting opportunity at ${item.company_name} for ${item.job_role}. Requires ${item.qualification} with ${item.language_required} fluency.`,
+            cabFacility: cab,
+            languageRequired: item.language_required,
+            qualification: item.qualification,
+            shiftDetails: item.shift_details,
+            additionalNotes: item.additional_notes
+          };
+        });
         renderJobs();
       }
     })
     .catch(() => {
       // Fallback silently to bundled liveJobs
     });
-}
+};
 
 function formatRelativeDateStr(timestamp) {
   if (!timestamp) return 'Recently';
-  const diff = Date.now() - new Date(timestamp).getTime();
+  // Handle MySQL datetime "YYYY-MM-DD HH:MM:SS"
+  const t = timestamp.replace(/-/g, '/');
+  const diff = Date.now() - new Date(t).getTime();
+  if (isNaN(diff) || diff < 0) return 'Just now';
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  if (mins < 60) return mins <= 1 ? 'Just now' : `${mins} mins ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) return hrs === 1 ? '1 hour ago' : `${hrs} hours ago`;
   const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
+  return days === 1 ? '1 day ago' : `${days} days ago`;
 }
 
 function initJobBoard() {
   const jobsGrid = document.getElementById('jobsGrid');
   if (!jobsGrid) return;
 
-  fetchLiveDbJobs();
+  window.fetchLiveDbJobs();
   renderJobs();
 
   // Search input
@@ -971,23 +1013,35 @@ function renderJobs() {
   if (!jobsGrid) return;
 
   const filtered = CEGS_DATA.liveJobs.filter(job => {
-    const matchesCategory = (currentJobCategory === 'all') || 
-      (job.department.toLowerCase().includes(currentJobCategory.toLowerCase()));
+    let matchesCategory = (currentJobCategory === 'all');
+    if (!matchesCategory) {
+      const cat = currentJobCategory.toLowerCase();
+      const textToSearch = `${job.department || ''} ${job.title || ''} ${job.company || ''} ${(job.tags || []).join(' ')}`.toLowerCase();
+      if (cat === 'tech') {
+        matchesCategory = /tech|software|developer|engineer|it|web|cloud|data|frontend|backend|full stack/i.test(textToSearch);
+      } else if (cat === 'hr') {
+        matchesCategory = /hr|staffing|talent|human resources|recruitment|recruiter/i.test(textToSearch);
+      } else if (cat === 'bpo') {
+        matchesCategory = /bpo|sales|support|customer|voice|telecaller|representative|executive/i.test(textToSearch);
+      } else if (cat === 'payroll') {
+        matchesCategory = /payroll|finance|account|compliance|tax/i.test(textToSearch);
+      } else {
+        matchesCategory = textToSearch.includes(cat);
+      }
+    }
     
     const matchesSearch = !currentSearchQuery || 
-      job.title.toLowerCase().includes(currentSearchQuery) ||
-      job.description.toLowerCase().includes(currentSearchQuery) ||
-      job.tags.some(t => t.toLowerCase().includes(currentSearchQuery));
+      `${job.title} ${job.company} ${job.location} ${job.experience} ${job.description} ${(job.tags || []).join(' ')}`.toLowerCase().includes(currentSearchQuery);
 
     return matchesCategory && matchesSearch;
   });
 
   if (filtered.length === 0) {
     jobsGrid.innerHTML = `
-      <div style="grid-column: span 2; text-align: center; padding: 3rem; background: #ffffff; border-radius: 16px;">
+      <div style="grid-column: span 2; text-align: center; padding: 3.5rem 1.5rem; background: #ffffff; border-radius: 18px; border: 1.5px dashed var(--border-light);">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" style="margin-bottom: 1rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <h4 style="color: #0f1c2d; margin-bottom: 0.5rem;">No matching openings found</h4>
-        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.25rem;">Try adjusting your keywords or department filter, or drop your general resume below.</p>
+        <h4 style="color: #0f1c2d; margin-bottom: 0.5rem; font-size: 1.25rem;">No matching openings found</h4>
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.25rem;">Try adjusting your keywords or category filter, or drop your general resume below.</p>
         <button class="btn btn-primary btn-sm" onclick="openGeneralApplyModal()">Drop Your Resume</button>
       </div>
     `;
@@ -998,25 +1052,35 @@ function renderJobs() {
     <div class="job-card">
       <div>
         <div class="job-meta-top">
-          <span class="badge badge-teal">${job.department}</span>
-          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 500;">Posted ${job.posted}</span>
+          <span class="badge badge-${job.badgeColor || 'teal'}">${job.department}</span>
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Posted ${job.posted}</span>
         </div>
+        
         <h3 class="job-title">${job.title}</h3>
+        
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-3"></path><path d="M9 9v.01"></path><path d="M9 12v.01"></path><path d="M9 15v.01"></path><path d="M9 18v.01"></path></svg>
+          <span>${job.company || 'CEGS Partner Client'}</span>
+        </div>
+
         <div class="job-details-strip">
           <span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
             ${job.location}
           </span>
           <span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
             ${job.experience}
           </span>
         </div>
-        <p style="font-size: 0.875rem; color: #64748b; margin-bottom: 1rem; line-height: 1.5;">${job.description.substring(0, 110)}...</p>
+
+        <p style="font-size: 0.875rem; color: #64748b; margin-bottom: 1rem; line-height: 1.5;">${job.description.length > 120 ? job.description.substring(0, 120) + '...' : job.description}</p>
+        
         <div class="job-tags">
           ${job.tags.map(t => `<span class="tech-tag">${t}</span>`).join('')}
         </div>
       </div>
+
       <div class="job-footer">
         <div class="job-salary">${job.salary}</div>
         <div style="display: flex; gap: 0.5rem;">
