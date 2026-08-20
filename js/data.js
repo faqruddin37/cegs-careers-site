@@ -196,7 +196,7 @@ const CEGS_DATA = {
       description: "Get pre-vetted top 5% talent in 48 hours across Tech, Non-Tech, Sales, and Leadership roles.",
       badge: "For Employers & Founders",
       themeClass: "intent-teal",
-      targetHash: "#hire-talent",
+      targetHash: "#contact",
       actionText: "Request Talent Profile"
     },
     {

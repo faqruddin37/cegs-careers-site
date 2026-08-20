@@ -130,7 +130,6 @@
           </li>
 
           <li class="nav-item"><a href="#careers" class="nav-link">Careers & Jobs</a></li>
-          <li class="nav-item"><a href="#hire-talent" class="nav-link">Hire Talent</a></li>
           <li class="nav-item"><a href="#blog" class="nav-link">Blog & Insights</a></li>
           <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
@@ -232,8 +231,8 @@
                   <span>Explore Live Openings</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
-                <a href="#hire-talent" class="btn btn-outline btn-sm">
-                  <span>Hire Top Talent</span>
+                <a href="#contact" class="btn btn-outline btn-sm">
+                  <span>Contact Advisory</span>
                 </a>
               </div>
             </div>
@@ -247,7 +246,7 @@
 
                 <div class="intent-list">
                   <!-- Option 1: Company looking to hire candidates -->
-                  <a href="javascript:void(0)" class="intent-option-btn" data-target="#hire-talent">
+                  <a href="javascript:void(0)" class="intent-option-btn" data-target="#contact">
                     <span class="intent-title">We are a company looking to hire candidates</span>
                     <span class="intent-chevron">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -1089,13 +1088,13 @@
               <h1 class="page-hero-title">Enterprise Staffing & Talent Augmentation</h1>
               <p class="page-hero-desc">Fast-track recruitment delivering rigorously screened permanent, contract, and CXO executive talent in 48 hours.</p>
               <div class="hero-ctas" style="margin-top: 1.5rem;">
-                <a href="#hire-talent" class="btn btn-primary btn-sm">
+                <button class="btn btn-primary btn-sm" onclick="openBookingModal()">
                   <span>Get Started - It's Free</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </a>
-                <button class="btn btn-outline btn-sm" onclick="openBookingModal()">
-                  <span>Book Strategy Session</span>
                 </button>
+                <a href="#contact" class="btn btn-outline btn-sm">
+                  <span>Contact Recruiter Desk</span>
+                </a>
               </div>
             </div>
             <div class="page-hero-visual">
@@ -1124,7 +1123,7 @@
                 <h3>Permanent IT & Tech Placement</h3>
                 <p>Full-stack software engineers, cloud architects, data scientists, and product leaders evaluated by domain specialists before interview submission.</p>
               </div>
-              <a href="#hire-talent" class="btn btn-outline btn-sm" style="width: 100%; text-align: center;">Requisition Tech Talent</a>
+              <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="openBookingModal()">Inquire Tech Placement</button>
             </div>
 
             <div class="service-sub-card">
@@ -1135,7 +1134,7 @@
                 <h3>Contract Staff Augmentation</h3>
                 <p>Deploy specialized squads for time-bound deliverables. Complete flexibility with monthly billing, zero liability, and optional contract-to-hire transitions.</p>
               </div>
-              <a href="#hire-talent" class="btn btn-outline btn-sm" style="width: 100%; text-align: center;">Requisition Contract Staff</a>
+              <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="openBookingModal()">Inquire Contract Staffing</button>
             </div>
 
             <div class="service-sub-card">
@@ -1153,10 +1152,10 @@
           <div class="service-action-banner">
             <h3 style="font-size: 1.6rem; color: var(--text-heading); margin-bottom: 0.5rem;">Have Active Openings to Fill in 48 Hours?</h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-              Submit your requisition to our dedicated recruiter desk and receive pre-screened shortlists within 48 to 72 hours.
+              Connect with our dedicated recruiter desk and receive pre-screened shortlists within 48 to 72 hours.
             </p>
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-              <a href="#hire-talent" class="btn btn-primary">Submit Hiring Requisition</a>
+              <a href="#contact" class="btn btn-primary">Contact Recruiter Desk</a>
               <a href="#services" class="btn btn-outline">&larr; Back to Services</a>
             </div>
           </div>
@@ -1498,129 +1497,7 @@
       </section>
     </div>
 
-    <!-- ==========================================================================
-         PAGE 5: HIRE TALENT VIEW
-         ========================================================================== -->
-    <div class="page-view" id="page-hire-talent">
-      <!-- Dedicated Hire Hero Banner -->
-      <div class="page-hero-banner">
-        <div class="container">
-          <div class="page-hero-breadcrumbs">
-            <a href="#home">Home</a>
-            <span>/</span>
-            <span>Hire Talent</span>
-          </div>
-          <h1 class="page-hero-title">Hire Pre-Vetted Talent in 48 Hours</h1>
-          <p class="page-hero-desc">Scale your engineering, leadership, or operations team with rigorously evaluated professionals ready to deliver impact from Day 1.</p>
-        </div>
-      </div>
 
-      <!-- Employer Requisition & Calculator Section -->
-      <section class="employer-section">
-        <div class="container">
-          <div class="employer-grid">
-            
-            <!-- Talent Request Form -->
-            <div class="talent-form-card">
-              <span class="badge badge-teal" style="margin-bottom: 0.75rem;">Employer Fast-Track</span>
-              <h2 style="font-size: 1.85rem; margin-bottom: 0.5rem; color: #0f1c2d;">Submit Your Requisition</h2>
-              <p style="font-size: 0.95rem; color: #64748b; margin-bottom: 2rem;">Tell us your hiring criteria. Our sector-specialized talent partners will dispatch verified candidate profiles within 48 to 72 hours.</p>
-
-              <form id="employerTalentForm">
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label class="form-label">Company Name *</label>
-                    <input type="text" id="companyNameInput" class="form-control" placeholder="e.g. Acme Technologies" required />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Work Email *</label>
-                    <input type="email" class="form-control" placeholder="hiring@company.com" required />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Contact Person & Phone *</label>
-                    <input type="tel" class="form-control" placeholder="+91 98765 43210" required />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Primary Role / Skill Needed *</label>
-                    <select class="form-control" required>
-                      <option value="">Select Primary Domain</option>
-                      <option value="tech">Full Stack / Frontend / Backend Engineers</option>
-                      <option value="cloud">DevOps, Cloud & Database Architects</option>
-                      <option value="leadership">Leadership & CXO Executive Search</option>
-                      <option value="sales">Inside Sales & SDR Squad</option>
-                      <option value="hr-payroll">HR Consulting & Payroll Outsourcing</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Headcount Required</label>
-                    <input type="number" class="form-control" placeholder="e.g. 3" min="1" max="100" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Hiring Timeline / Urgency</label>
-                    <select class="form-control">
-                      <option>Immediate (Within 48-72 Hours)</option>
-                      <option>Next 2 to 4 Weeks</option>
-                      <option>Quarterly Pipeline Planning</option>
-                    </select>
-                  </div>
-                  <div class="form-group full-width">
-                    <label class="form-label">Role Description / Specific Tech Stack</label>
-                    <textarea class="form-control" placeholder="Mention key requirements, experience band (e.g. 4-6 yrs React/Node), and compensation range..."></textarea>
-                  </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-                  Submit Talent Requirement
-                </button>
-              </form>
-            </div>
-
-            <!-- Interactive Hiring Turnaround & Savings Calculator -->
-            <div>
-              <div class="cegs-card" style="background: #ffffff;">
-                <span class="badge badge-blue" style="margin-bottom: 0.75rem;">Interactive Estimator</span>
-                <h3 style="font-size: 1.45rem; margin-bottom: 0.5rem;">Hiring Velocity & Savings Calculator</h3>
-                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">Estimate turnaround time and operational cost savings by partnering with CEGS dedicated recruitment engines.</p>
-
-                <div style="margin-bottom: 1.5rem;">
-                  <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">
-                    <span>Positions to Fill:</span>
-                    <span id="calcHeadcountValue" style="color: #0d5e72;">4 Roles</span>
-                  </div>
-                  <input type="range" id="calcHeadcount" min="1" max="25" value="4" style="width: 100%; accent-color: #0d5e72; cursor: pointer;" />
-                </div>
-
-                <div style="margin-bottom: 1.75rem;">
-                  <label class="form-label" style="margin-bottom: 0.4rem; display: block;">Target Domain</label>
-                  <select class="form-control" id="calcRoleType">
-                    <option>Software Engineering & Tech</option>
-                    <option>Inside Sales & BPO Operations</option>
-                    <option>HR & Corporate Leadership</option>
-                    <option>Statutory Payroll Outsourcing</option>
-                  </select>
-                </div>
-
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; margin-bottom: 1.5rem;">
-                  <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 700;">Est. First Shortlist</div>
-                    <div id="calcTurnaroundDays" style="font-size: 1.25rem; font-weight: 800; color: #0d5e72; margin-top: 0.25rem;">48 - 72 Hours</div>
-                  </div>
-                  <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 700;">Est. Cost Efficiency</div>
-                    <div id="calcSavings" style="font-size: 1.25rem; font-weight: 800; color: #0bb379; margin-top: 0.25rem;">₹7 Lacs+</div>
-                  </div>
-                </div>
-
-                <button class="btn btn-outline" style="width: 100%;" onclick="openBookingModal()">
-                  Schedule Free 15-Min Scoping Call
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-    </div>
 
     <!-- ==========================================================================
          PAGE 6: CONTACT US VIEW
@@ -1834,7 +1711,6 @@
             <li><a href="#about">About CEGS</a></li>
             <li><a href="#careers">Browse Live Openings</a></li>
             <li><a href="#blog">Industry Insights & Blog</a></li>
-            <li><a href="#hire-talent">Employer Talent Request</a></li>
             <li><a href="javascript:void(0)" onclick="openGeneralApplyModal()">Submit Resume</a></li>
             <li><a href="javascript:void(0)" onclick="openBookingModal()">Book Strategy Session</a></li>
           </ul>

@@ -69,7 +69,6 @@ function initRouter() {
     'service-bpo': 'BPO / KPO & Inside Sales Revenue Engines | CEGS',
     'service-training': 'Corporate Training & Career Bootcamps | CEGS',
     'careers': 'Careers & Live Job Openings | CEGS Opportunity Hub',
-    'hire-talent': 'Hire Top Talent in 48h | CEGS Enterprise Recruitment',
     'blog': 'Industry Insights & Thought Leadership | CEGS',
     'contact': 'Contact CEGS | Corporate Headquarters Bengaluru'
   };
@@ -95,7 +94,8 @@ function initRouter() {
     'service-training-courses': 'service-training',
     'insights': 'blog',
     'blogs': 'blog',
-    'articles': 'blog'
+    'articles': 'blog',
+    'hire-talent': 'contact'
   };
 
   function handleRoute() {
@@ -113,7 +113,7 @@ function initRouter() {
       'service-it-services', 'service-seo', 
       'service-hr-consulting', 'service-staffing', 
       'service-payroll', 'service-bpo', 'service-training', 
-      'careers', 'hire-talent', 'blog', 'contact'
+      'careers', 'blog', 'contact'
     ];
 
     if (!validRoutes.includes(cleanRoute)) {

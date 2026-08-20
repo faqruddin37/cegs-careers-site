@@ -48,7 +48,7 @@ function initIntentSelector() {
       e.preventDefault();
       const targetHash = btn.getAttribute('data-target');
       
-      if (targetHash === '#hire-talent') {
+      if (targetHash === '#hire-talent' || targetHash === '#contact') {
         openCompanyHiringWizard();
       } else if (targetHash === '#careers') {
         openCandidateJobWizard();
