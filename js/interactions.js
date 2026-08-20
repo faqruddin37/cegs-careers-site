@@ -951,6 +951,14 @@ window.fetchLiveDbJobs = function() {
             posted: formatRelativeDateStr(item.posted_date),
             tags: tags.filter(Boolean),
             description: item.additional_notes || `Exciting opportunity at ${item.company_name} for ${item.job_role}. Requires ${item.qualification} with ${item.language_required} fluency.`,
+            requirements: [
+              `Educational Qualification: ${item.qualification || 'Any Graduate'}`,
+              `Language Fluency: ${item.language_required || 'English, Hindi'}`,
+              `Shift Schedule: ${item.shift_details || 'Day Shift'}`,
+              cab && !/^no$|^none$/i.test(cab) ? `Transport Facility: ${cab}` : null,
+              item.location ? `Work Location: ${item.location}` : null,
+              `Offered Compensation: ${salaryFormatted}`
+            ].filter(Boolean),
             cabFacility: cab,
             languageRequired: item.language_required,
             qualification: item.qualification,
@@ -1216,33 +1224,61 @@ window.handleWhatsAppSend = function(e) {
 
 // Job Details Modal
 window.openJobDetailsModal = function(jobId) {
-  const job = CEGS_DATA.liveJobs.find(j => j.id === jobId);
+  const job = CEGS_DATA.liveJobs.find(j => String(j.id) === String(jobId));
   if (!job) return;
+
+  const reqs = Array.isArray(job.requirements) && job.requirements.length > 0 
+    ? job.requirements 
+    : [
+        `Educational Qualification: ${job.qualification || job.experience || 'Graduate'}`,
+        `Language Fluency: ${job.languageRequired || 'English, Hindi'}`,
+        `Shift Schedule: ${job.shiftDetails || job.type || 'Standard'}`,
+        job.cabFacility && !/^no$|^none$/i.test(job.cabFacility) ? `Cab & Transport: ${job.cabFacility}` : null,
+        `Work Location: ${job.location}`,
+        `Offered Compensation: ${job.salary}`
+      ].filter(Boolean);
+
+  const cabHtml = (job.cabFacility && !/^no$|^none$/i.test(job.cabFacility))
+    ? `<span>🚗 <strong>Cab:</strong> ${job.cabFacility}</span>`
+    : '';
 
   const content = `
     <div style="margin-bottom: 1.5rem;">
-      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-        <span class="badge badge-teal">${job.department}</span>
-        <span class="badge badge-blue">${job.type}</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge badge-${job.badgeColor || 'teal'}">${job.department}</span>
+          <span class="badge badge-gray">${job.type || 'Full-Time'}</span>
+        </div>
+        <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">⏱️ Posted ${job.posted}</span>
       </div>
-      <h2 style="font-size: 1.6rem; color: #0f1c2d; margin-bottom: 0.5rem;">${job.title}</h2>
-      <div style="display: flex; gap: 1.25rem; font-size: 0.85rem; color: #64748b;">
-        <span>📍 ${job.location}</span>
-        <span>💼 ${job.experience}</span>
-        <span>💰 ${job.salary}</span>
+      
+      <h2 style="font-size: 1.65rem; color: #0f1c2d; margin-bottom: 0.35rem; font-weight: 800; line-height: 1.25;">${job.title}</h2>
+      
+      <div style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.4rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-3"></path><path d="M9 9v.01"></path><path d="M9 12v.01"></path><path d="M9 15v.01"></path><path d="M9 18v.01"></path></svg>
+        <span>${job.company || 'CEGS Partner Client'}</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.85rem; margin-bottom: 1.25rem;">
+        <span>📍 <strong>Location:</strong> ${job.location}</span>
+        <span>💰 <strong>Salary:</strong> ${job.salary}</span>
+        <span>🎓 <strong>Qualification:</strong> ${job.qualification || job.experience}</span>
+        <span>⏰ <strong>Shift:</strong> ${job.shiftDetails || job.type}</span>
+        ${job.languageRequired ? `<span>🗣️ <strong>Language:</strong> ${job.languageRequired}</span>` : ''}
+        ${cabHtml}
       </div>
     </div>
     
     <div style="margin-bottom: 1.5rem;">
-      <h4 style="margin-bottom: 0.5rem; color: #0f1c2d;">Role Overview</h4>
-      <p style="font-size: 0.95rem; color: #475569; line-height: 1.6;">${job.description}</p>
+      <h4 style="margin-bottom: 0.5rem; color: #0f1c2d; font-weight: 800;">Role Overview</h4>
+      <p style="font-size: 0.925rem; color: #475569; line-height: 1.6;">${job.description}</p>
     </div>
 
     <div style="margin-bottom: 1.75rem;">
-      <h4 style="margin-bottom: 0.75rem; color: #0f1c2d;">Key Requirements & Qualifications</h4>
-      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
-        ${job.requirements.map(req => `
-          <li style="display: flex; gap: 0.5rem; font-size: 0.9rem; color: #334155;">
+      <h4 style="margin-bottom: 0.75rem; color: #0f1c2d; font-weight: 800;">Key Requirements & Highlights</h4>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; padding: 0;">
+        ${reqs.map(req => `
+          <li style="display: flex; gap: 0.6rem; font-size: 0.9rem; color: #334155; align-items: flex-start;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0bb379" stroke-width="2.5" style="flex-shrink: 0; margin-top: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
             <span>${req}</span>
           </li>
@@ -1252,7 +1288,10 @@ window.openJobDetailsModal = function(jobId) {
 
     <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.25rem; border-top: 1px solid #e2e8f0;">
       <button class="btn btn-outline" onclick="closeModal()">Close</button>
-      <button class="btn btn-primary" onclick="openJobApplyModal('${job.id}')">Proceed to Apply</button>
+      <button class="btn btn-primary" onclick="openJobApplyModal('${job.id}')">
+        <span>Proceed to Apply</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>
     </div>
   `;
 
@@ -1261,8 +1300,8 @@ window.openJobDetailsModal = function(jobId) {
 
 // Job Apply Modal
 window.openJobApplyModal = function(jobId) {
-  const job = CEGS_DATA.liveJobs.find(j => j.id === jobId);
-  const title = job ? job.title : "General Candidate Application";
+  const job = CEGS_DATA.liveJobs.find(j => String(j.id) === String(jobId));
+  const title = job ? `${job.title} (${job.company})` : "General Candidate Application";
 
   const content = `
     <div style="margin-bottom: 1.5rem;">
