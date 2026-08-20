@@ -131,6 +131,7 @@
 
           <li class="nav-item"><a href="#careers" class="nav-link">Careers & Jobs</a></li>
           <li class="nav-item"><a href="#hire-talent" class="nav-link">Hire Talent</a></li>
+          <li class="nav-item"><a href="#blog" class="nav-link">Blog & Insights</a></li>
           <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
       </nav>
@@ -334,6 +335,25 @@
           </div>
 
           <div class="testimonials-grid" id="testimonialsGrid"></div>
+        </div>
+      </section>
+
+      <!-- Latest Insights & Research Preview on Home -->
+      <section class="home-blog-preview-section">
+        <div class="container">
+          <div class="section-header-flex">
+            <div>
+              <span class="section-tag">Industry Perspectives</span>
+              <h2 class="section-title">Latest Insights, Research & Strategy</h2>
+              <p class="section-desc">Expert analyses on organizational design, talent acquisition, labor compliance, and digital engineering.</p>
+            </div>
+            <a href="#blog" class="btn btn-outline btn-sm">
+              <span>View All Articles</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+
+          <div class="blogs-grid" id="homeBlogsGrid" style="margin-top: 2.25rem;"></div>
         </div>
       </section>
 
@@ -1695,6 +1715,65 @@
           </div>
         </div>
       </section>
+    <!-- ==========================================================================
+         PAGE: BLOG & INDUSTRY INSIGHTS (Dedicated Multi-Article Page)
+         ========================================================================== -->
+    <div class="page-view" id="page-blog">
+      <!-- Dedicated Blog Hero Banner -->
+      <div class="page-hero-banner">
+        <div class="container">
+          <div class="page-hero-breadcrumbs">
+            <a href="#home">Home</a>
+            <span>/</span>
+            <span>Blog & Insights</span>
+          </div>
+          <h1 class="page-hero-title">CEGS Insights & Industry Perspectives</h1>
+          <p class="page-hero-desc">Authoritative guides, strategic frameworks, and executive deep dives into organizational architecture, talent acquisition, statutory payroll, and enterprise software engineering.</p>
+        </div>
+      </div>
+
+      <section class="blog-main-section">
+        <div class="container">
+          
+          <!-- Blog Search & Category Filters Bar -->
+          <div class="blog-filter-bar">
+            <div class="blog-search-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="blogSearchInput" placeholder="Search insights by topic, keyword, or author..." />
+            </div>
+
+            <div class="blog-category-pills" id="blogCategoryPills">
+              <button type="button" class="blog-cat-pill active" data-cat="all">All Topics</button>
+              <button type="button" class="blog-cat-pill" data-cat="HR & Leadership">HR & Leadership</button>
+              <button type="button" class="blog-cat-pill" data-cat="Tech Staffing">Tech Staffing</button>
+              <button type="button" class="blog-cat-pill" data-cat="Payroll Compliance">Payroll Compliance</button>
+              <button type="button" class="blog-cat-pill" data-cat="Inside Sales & BPO">Inside Sales & BPO</button>
+              <button type="button" class="blog-cat-pill" data-cat="Digital Engineering">Digital Engineering</button>
+              <button type="button" class="blog-cat-pill" data-cat="Career Guidance">Career Guidance</button>
+            </div>
+          </div>
+
+          <!-- Featured Spotlight Article -->
+          <div class="blog-spotlight-card" id="blogSpotlight"></div>
+
+          <!-- 3-Column Articles Grid -->
+          <div class="blogs-grid" id="blogsGrid"></div>
+
+          <!-- Newsletter / Insights Subscription Card -->
+          <div class="blog-newsletter-card">
+            <div class="blog-newsletter-copy">
+              <span class="badge badge-teal" style="margin-bottom: 0.5rem;">CEGS Executive Briefing</span>
+              <h3 style="color: #0f1c2d; font-size: 1.5rem; margin-bottom: 0.4rem;">Stay Ahead in Workforce Strategy & Tech Trends</h3>
+              <p style="color: #64748b; font-size: 0.95rem; margin: 0;">Join 8,500+ founders, CHROs, and engineering leaders receiving our monthly breakdown of hiring market benchmarks and compliance changes.</p>
+            </div>
+            <form class="blog-newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+              <input type="email" placeholder="Enter your work email..." required />
+              <button type="submit" class="btn btn-primary">Subscribe Free</button>
+            </form>
+          </div>
+
+        </div>
+      </section>
     </div>
 
   </main>
@@ -1754,6 +1833,7 @@
           <ul class="footer-links">
             <li><a href="#about">About CEGS</a></li>
             <li><a href="#careers">Browse Live Openings</a></li>
+            <li><a href="#blog">Industry Insights & Blog</a></li>
             <li><a href="#hire-talent">Employer Talent Request</a></li>
             <li><a href="javascript:void(0)" onclick="openGeneralApplyModal()">Submit Resume</a></li>
             <li><a href="javascript:void(0)" onclick="openBookingModal()">Book Strategy Session</a></li>

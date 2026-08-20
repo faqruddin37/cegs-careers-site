@@ -1388,3 +1388,74 @@ function initEmployerForm() {
 function initFaqAccordion() {
   // Handled cleanly via window.toggleFaq
 }
+
+// 8. Blog & Article Reader Modal
+window.openBlogPostModal = function(blogId) {
+  if (!CEGS_DATA.blogs) return;
+  const blog = CEGS_DATA.blogs.find(b => b.id === blogId);
+  if (!blog) return;
+
+  const content = `
+    <div class="blog-modal-article">
+      <div class="blog-modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <span class="badge badge-${blog.categoryColor || 'teal'}">${blog.category}</span>
+          <span style="font-size: 0.8rem; font-weight: 700; color: #64748b;">
+            ⏱️ ${blog.readTime}
+          </span>
+        </div>
+
+        <h1 class="blog-modal-title">${blog.title}</h1>
+
+        <div class="blog-modal-meta">
+          <div class="author-chip">
+            <div class="author-avatar-chip">${blog.authorAvatar}</div>
+            <div class="author-details">
+              <h5>${blog.author}</h5>
+              <p>${blog.authorRole} • Published ${blog.date}</p>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline btn-sm" onclick="copyBlogLink('${blog.title}')" title="Share this analysis">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <span>Share Article</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="blog-modal-content">
+        ${blog.content}
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        ${blog.tags.map(t => `<span class="blog-mini-tag" style="font-size: 0.8rem; padding: 0.3rem 0.75rem;">#${t}</span>`).join('')}
+      </div>
+
+      <div class="blog-modal-cta">
+        <div>
+          <h4 style="margin: 0 0 0.25rem; color: #0f1c2d; font-weight: 800;">Consult With Our Specialists</h4>
+          <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Apply these frameworks directly to your hiring pipeline or organizational structure.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="closeModal(); openBookingModal();">Book Consultation</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  openModal(content);
+};
+
+window.copyBlogLink = function(title) {
+  const currentUrl = window.location.origin + window.location.pathname + '#blog';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      showToast(`Link copied to clipboard! Share "${title}" with your team.`);
+    }).catch(() => {
+      showToast(`Link copied: ${currentUrl}`);
+    });
+  } else {
+    showToast(`Link copied: ${currentUrl}`);
+  }
+};

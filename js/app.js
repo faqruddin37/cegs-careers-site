@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDynamicServices();
   renderTestimonials();
   renderFaqs();
+  renderBlogs();
+  renderHomeBlogPreview();
+  initBlogFilters();
 });
 
 // Navigation & Mobile Drawer
@@ -67,6 +70,7 @@ function initRouter() {
     'service-training': 'Corporate Training & Career Bootcamps | CEGS',
     'careers': 'Careers & Live Job Openings | CEGS Opportunity Hub',
     'hire-talent': 'Hire Top Talent in 48h | CEGS Enterprise Recruitment',
+    'blog': 'Industry Insights & Thought Leadership | CEGS',
     'contact': 'Contact CEGS | Corporate Headquarters Bengaluru'
   };
 
@@ -88,7 +92,10 @@ function initRouter() {
     'service-bpo-inside-sales': 'service-bpo',
     'training': 'service-training',
     'training-courses': 'service-training',
-    'service-training-courses': 'service-training'
+    'service-training-courses': 'service-training',
+    'insights': 'blog',
+    'blogs': 'blog',
+    'articles': 'blog'
   };
 
   function handleRoute() {
@@ -106,7 +113,7 @@ function initRouter() {
       'service-it-services', 'service-seo', 
       'service-hr-consulting', 'service-staffing', 
       'service-payroll', 'service-bpo', 'service-training', 
-      'careers', 'hire-talent', 'contact'
+      'careers', 'hire-talent', 'blog', 'contact'
     ];
 
     if (!validRoutes.includes(cleanRoute)) {
@@ -297,5 +304,215 @@ window.toggleFaq = function(btn, e) {
   if (!isAlreadyActive) {
     item.classList.add('active');
     btn.setAttribute('aria-expanded', 'true');
+  }
+};
+
+// ==========================================================================
+// Blog & Industry Insights Rendering & Filter Logic
+// ==========================================================================
+let currentBlogCategory = 'all';
+let currentBlogSearch = '';
+
+function renderBlogs() {
+  const spotlightContainer = document.getElementById('blogSpotlight');
+  const gridContainer = document.getElementById('blogsGrid');
+  if (!gridContainer || !CEGS_DATA.blogs) return;
+
+  let filtered = CEGS_DATA.blogs;
+
+  // Filter by category
+  if (currentBlogCategory !== 'all') {
+    filtered = filtered.filter(b => b.category.toLowerCase() === currentBlogCategory.toLowerCase());
+  }
+
+  // Filter by search query
+  if (currentBlogSearch.trim()) {
+    const q = currentBlogSearch.toLowerCase();
+    filtered = filtered.filter(b => 
+      b.title.toLowerCase().includes(q) || 
+      b.summary.toLowerCase().includes(q) || 
+      b.tags.some(t => t.toLowerCase().includes(q)) ||
+      b.author.toLowerCase().includes(q)
+    );
+  }
+
+  // Render Spotlight Hero Article (Featured post if on 'all' and no search)
+  if (spotlightContainer) {
+    if (currentBlogCategory === 'all' && !currentBlogSearch.trim()) {
+      const featuredBlog = CEGS_DATA.blogs.find(b => b.featured) || CEGS_DATA.blogs[0];
+      spotlightContainer.style.display = 'block';
+      spotlightContainer.innerHTML = `
+        <div class="spotlight-inner">
+          <div class="spotlight-content">
+            <div class="spotlight-meta-strip">
+              <span class="badge badge-${featuredBlog.categoryColor || 'teal'}">${featuredBlog.category}</span>
+              <span class="blog-read-time">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                ${featuredBlog.readTime}
+              </span>
+              <span style="font-size: 0.8rem; color: #64748b;">${featuredBlog.date}</span>
+            </div>
+            <h2 class="spotlight-title" onclick="openBlogPostModal('${featuredBlog.id}')">${featuredBlog.title}</h2>
+            <p class="spotlight-desc">${featuredBlog.summary}</p>
+            <div class="spotlight-tags">
+              ${featuredBlog.tags.map(t => `<span class="blog-mini-tag">#${t}</span>`).join('')}
+            </div>
+            <div class="spotlight-footer">
+              <div class="author-chip">
+                <div class="author-avatar-chip">${featuredBlog.authorAvatar}</div>
+                <div class="author-details">
+                  <h5>${featuredBlog.author}</h5>
+                  <p>${featuredBlog.authorRole}</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="openBlogPostModal('${featuredBlog.id}')">
+                <span>Read Full Analysis</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+          </div>
+          <div class="spotlight-graphic">
+            <div class="spotlight-badge-ribbon">Executive Spotlight</div>
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">📊</div>
+            <h4 style="color: #0d5e72; font-weight: 800; margin-bottom: 0.35rem;">Organizational Playbook</h4>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Span-of-control frameworks & dual career ladders for enterprise tech.</p>
+          </div>
+        </div>
+      `;
+    } else {
+      spotlightContainer.style.display = 'none';
+    }
+  }
+
+  // Render Grid
+  const displayArticles = (currentBlogCategory === 'all' && !currentBlogSearch.trim()) 
+    ? filtered.filter(b => !b.featured) 
+    : filtered;
+
+  if (displayArticles.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: #ffffff; border-radius: 16px; border: 1.5px dashed #cbd5e1;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+        <h4 style="color: #0f1c2d; margin-bottom: 0.5rem;">No matching articles found</h4>
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.25rem;">Try adjusting your search terms or selecting a different category.</p>
+        <button type="button" class="btn btn-outline btn-sm" onclick="resetBlogFilters()">Reset Filters</button>
+      </div>
+    `;
+    return;
+  }
+
+  gridContainer.innerHTML = displayArticles.map(blog => `
+    <article class="blog-card" onclick="openBlogPostModal('${blog.id}')">
+      <div>
+        <div class="blog-card-meta">
+          <span class="badge badge-${blog.categoryColor || 'teal'}">${blog.category}</span>
+          <span class="blog-read-time">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            ${blog.readTime}
+          </span>
+        </div>
+        <h3 class="blog-card-title">${blog.title}</h3>
+        <p class="blog-card-excerpt">${blog.summary}</p>
+        <div class="blog-card-tags">
+          ${blog.tags.map(t => `<span class="blog-mini-tag">#${t}</span>`).join('')}
+        </div>
+      </div>
+      <div class="blog-card-footer">
+        <div class="author-chip">
+          <div class="author-avatar-chip" style="width: 32px; height: 32px; font-size: 0.75rem;">${blog.authorAvatar}</div>
+          <div class="author-details">
+            <h5 style="font-size: 0.82rem;">${blog.author}</h5>
+            <p style="font-size: 0.7rem;">${blog.date}</p>
+          </div>
+        </div>
+        <span class="blog-read-btn">
+          <span>Read</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </span>
+      </div>
+    </article>
+  `).join('');
+}
+
+// Render Preview on Home Page (Top 3 articles)
+function renderHomeBlogPreview() {
+  const container = document.getElementById('homeBlogsGrid');
+  if (!container || !CEGS_DATA.blogs) return;
+
+  const previewArticles = CEGS_DATA.blogs.slice(0, 3);
+
+  container.innerHTML = previewArticles.map(blog => `
+    <article class="blog-card" onclick="openBlogPostModal('${blog.id}')">
+      <div>
+        <div class="blog-card-meta">
+          <span class="badge badge-${blog.categoryColor || 'teal'}">${blog.category}</span>
+          <span class="blog-read-time">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            ${blog.readTime}
+          </span>
+        </div>
+        <h3 class="blog-card-title">${blog.title}</h3>
+        <p class="blog-card-excerpt">${blog.summary}</p>
+        <div class="blog-card-tags">
+          ${blog.tags.slice(0, 3).map(t => `<span class="blog-mini-tag">#${t}</span>`).join('')}
+        </div>
+      </div>
+      <div class="blog-card-footer">
+        <div class="author-chip">
+          <div class="author-avatar-chip" style="width: 32px; height: 32px; font-size: 0.75rem;">${blog.authorAvatar}</div>
+          <div class="author-details">
+            <h5 style="font-size: 0.82rem;">${blog.author}</h5>
+            <p style="font-size: 0.7rem;">${blog.date}</p>
+          </div>
+        </div>
+        <span class="blog-read-btn">
+          <span>Read Article</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </span>
+      </div>
+    </article>
+  `).join('');
+}
+
+// Blog Category & Search Interactions
+function initBlogFilters() {
+  const searchInput = document.getElementById('blogSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentBlogSearch = e.target.value;
+      renderBlogs();
+    });
+  }
+
+  const pills = document.querySelectorAll('.blog-cat-pill');
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentBlogCategory = pill.getAttribute('data-cat') || 'all';
+      renderBlogs();
+    });
+  });
+}
+
+window.resetBlogFilters = function() {
+  currentBlogCategory = 'all';
+  currentBlogSearch = '';
+  const searchInput = document.getElementById('blogSearchInput');
+  if (searchInput) searchInput.value = '';
+  const pills = document.querySelectorAll('.blog-cat-pill');
+  pills.forEach(p => {
+    if (p.getAttribute('data-cat') === 'all') p.classList.add('active');
+    else p.classList.remove('active');
+  });
+  renderBlogs();
+};
+
+window.handleNewsletterSubmit = function(e) {
+  e.preventDefault();
+  const form = e.target;
+  form.reset();
+  if (typeof showToast === 'function') {
+    showToast("Thank you for subscribing! You'll receive the next CEGS Executive Briefing in your inbox.");
   }
 };
