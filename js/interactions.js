@@ -892,10 +892,57 @@ function renderConsultantWizardModal() {
 let currentJobCategory = 'all';
 let currentSearchQuery = '';
 
+function fetchLiveDbJobs() {
+  fetch('api/jobs.php')
+    .then(res => {
+      if (!res.ok) throw new Error('API offline');
+      return res.json();
+    })
+    .then(data => {
+      if (data && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
+        CEGS_DATA.liveJobs = data.data.map(item => ({
+          id: item.id.toString(),
+          title: item.job_role,
+          company: item.company_name,
+          department: "Staffing",
+          type: item.shift_details || "Full-Time",
+          location: item.location,
+          experience: item.qualification,
+          salary: item.salary,
+          posted: formatRelativeDateStr(item.posted_date),
+          tags: [item.qualification, item.language_required, item.shift_details, item.cab_facility ? `🚗 ${item.cab_facility}` : null].filter(Boolean),
+          description: item.additional_notes || `Opportunity at ${item.company_name} for ${item.job_role}. Requires ${item.qualification} and ${item.language_required}.`,
+          requirements: [
+            `Educational Qualification: ${item.qualification}`,
+            `Language Required: ${item.language_required}`,
+            `Shift Schedule: ${item.shift_details}`,
+            item.cab_facility ? `Transport: ${item.cab_facility}` : null
+          ].filter(Boolean)
+        }));
+        renderJobs();
+      }
+    })
+    .catch(() => {
+      // Fallback silently to bundled liveJobs
+    });
+}
+
+function formatRelativeDateStr(timestamp) {
+  if (!timestamp) return 'Recently';
+  const diff = Date.now() - new Date(timestamp).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
 function initJobBoard() {
   const jobsGrid = document.getElementById('jobsGrid');
   if (!jobsGrid) return;
 
+  fetchLiveDbJobs();
   renderJobs();
 
   // Search input
