@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Admin - Authentication & Session Protection Helper
  */

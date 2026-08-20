@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Admin - Delete Job Handler (CRUD - Delete)
  */

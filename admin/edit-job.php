@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Admin - Edit / Update Job Posting (CRUD - Update)
  */

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Recruitment Portal - Database Configuration & Helper Functions
  */

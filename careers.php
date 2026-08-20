@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Public Careers Portal - Redirect to main SPA view
  */

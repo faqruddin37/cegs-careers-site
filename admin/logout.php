@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Admin - Logout Handler
  */

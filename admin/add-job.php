@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS Admin - Create New Job Posting (CRUD - Create)
  */

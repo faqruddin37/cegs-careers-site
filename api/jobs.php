@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * CEGS REST API - Live Jobs Endpoint
  * Returns JSON of active job postings from MySQL database
