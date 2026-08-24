@@ -386,10 +386,10 @@ const CEGS_DATA = {
       readTime: "6 min read",
       featured: true,
       author: "Mohammed Usman Zabi",
-      authorRole: "Founder & Strategic Director",
+      authorRole: "Founder & Managing Director",
       authorAvatar: "UZ",
       summary: "As high-growth tech companies expand from 100 to 500+ employees, traditional reporting structures fail. Discover the core principles of agile hierarchy, span-of-control benchmarking, and retention modeling.",
-      tags: ["Org Architecture", "HR Strategy", "Executive Leadership", "Workforce Scale"],
+      tags: ["Org Architecture", "HR Leadership", "Executive Leadership", "Workforce Scale"],
       content: `
         <p class="lead">Scaling an enterprise workforce is rarely just a numbers game—it is an architectural challenge. When companies cross the critical threshold of 100 to 500 employees, informal communication channels dissolve, managerial bandwidth is strained, and institutional friction rises exponentially.</p>
         
@@ -493,7 +493,7 @@ const CEGS_DATA = {
       readTime: "5 min read",
       featured: false,
       author: "Mohammed Raiyan Ahmed",
-      authorRole: "Delivery & Business Strategy Director",
+      authorRole: "Delivery & Operations Director",
       authorAvatar: "RA",
       summary: "How dedicated BPO squads and outbound SDR teams generated over $18M+ in qualified pipeline for international enterprises using multi-touch sequencing and personalized prospecting.",
       tags: ["BPO & KPO", "Inside Sales", "SDR Squads", "Pipeline Generation"],
@@ -513,7 +513,7 @@ const CEGS_DATA = {
     {
       id: "blog-5",
       slug: "cloud-native-microservices-vs-monolith-enterprise",
-      title: "Cloud-Native Microservices vs Monoliths: Architectural Strategies for Modern Scale",
+      title: "Cloud-Native Microservices vs Monoliths: Architectural Patterns for Modern Scale",
       category: "Digital Engineering",
       categoryColor: "blue",
       date: "July 28, 2026",
