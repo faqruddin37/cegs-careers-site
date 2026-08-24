@@ -893,11 +893,15 @@ let currentJobCategory = 'all';
 let currentSearchQuery = '';
 
 window.fetchLiveDbJobs = function() {
-  fetch('api/jobs.php?t=' + Date.now())
-    .then(res => {
-      if (!res.ok) throw new Error('API offline');
+  const tryFetch = (url) => {
+    return fetch(url + '?t=' + Date.now()).then(res => {
+      if (!res.ok) throw new Error('API unavailable');
       return res.json();
-    })
+    });
+  };
+
+  tryFetch('backend/api/jobs.php')
+    .catch(() => tryFetch('api/jobs.php'))
     .then(data => {
       if (data && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
         CEGS_DATA.liveJobs = data.data.map(item => {

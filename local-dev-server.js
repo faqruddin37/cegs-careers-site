@@ -27,8 +27,26 @@ const server = http.createServer((req, res) => {
   let reqUrl = decodeURIComponent(req.url.split('?')[0]);
   if (reqUrl === '/') reqUrl = '/index.html';
 
-  const filePath = path.join(BASE_DIR, reqUrl);
-  const ext = path.extname(filePath).toLowerCase();
+  let filePath = path.join(BASE_DIR, reqUrl);
+  let ext = path.extname(filePath).toLowerCase();
+
+  // If PHP file requested, execute with local PHP if available
+  if (ext === '.php') {
+    const { execFile } = require('child_process');
+    const phpPath = 'C:\\\\xampp\\\\php\\\\php.exe';
+    if (fs.existsSync(phpPath) && fs.existsSync(filePath)) {
+      execFile(phpPath, [filePath], (phpErr, stdout) => {
+        if (phpErr) {
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+          return res.end('PHP error: ' + phpErr.message);
+        }
+        res.writeHead(200, { 'Content-Type': reqUrl.includes('api/') ? 'application/json' : 'text/html' });
+        res.end(stdout);
+      });
+      return;
+    }
+  }
+
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
   fs.readFile(filePath, (err, content) => {

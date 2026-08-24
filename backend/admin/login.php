@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div style="margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1.25rem;">
           <p>Login Credentials: <strong>admin</strong> / <strong>adminpassword123</strong></p>
-          <a href="../index.html" style="color: #0d5e72; font-weight: 700; text-decoration: none; display: inline-block; margin-top: 0.5rem;">&larr; Back to Public Website</a>
+          <a href="../../index.html" style="color: #0d5e72; font-weight: 700; text-decoration: none; display: inline-block; margin-top: 0.5rem;">&larr; Back to Public Website</a>
         </div>
       </form>
     </div>
