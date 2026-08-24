@@ -970,13 +970,34 @@ window.fetchLiveDbJobs = function() {
             additionalNotes: item.additional_notes
           };
         });
+
+        // Save to localStorage for instant offline/Vercel sync
+        try {
+          localStorage.setItem('cegs_live_jobs', JSON.stringify(CEGS_DATA.liveJobs));
+        } catch (e) {}
+
         renderJobs();
+      } else {
+        loadFromLocalStorageFallback();
       }
     })
     .catch(() => {
-      // Fallback silently to bundled liveJobs
+      loadFromLocalStorageFallback();
     });
 };
+
+function loadFromLocalStorageFallback() {
+  try {
+    const saved = localStorage.getItem('cegs_live_jobs');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        CEGS_DATA.liveJobs = parsed;
+      }
+    }
+  } catch (e) {}
+  renderJobs();
+}
 
 function formatRelativeDateStr(timestamp) {
   if (!timestamp) return 'Recently';

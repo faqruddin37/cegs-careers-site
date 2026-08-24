@@ -221,6 +221,32 @@ const CEGS_DATA = {
 
   liveJobs: [
     {
+      id: "8",
+      title: "intranational process",
+      company: "codevate",
+      department: "Inside Sales & BPO",
+      badgeColor: "orange",
+      type: "Normal Shift",
+      location: "bangalore (hsr latout)",
+      experience: "puc & above",
+      salary: "₹19500",
+      posted: "Just now",
+      tags: ["🎓 puc & above", "🗣️ enghish, hindi", "⏰ Normal Shift"],
+      description: "sdfghjkl.",
+      requirements: [
+        "Educational Qualification: puc & above",
+        "Language Fluency: enghish, hindi",
+        "Shift Schedule: Normal Shift",
+        "Work Location: bangalore (hsr latout)",
+        "Offered Compensation: ₹19500"
+      ],
+      cabFacility: null,
+      languageRequired: "enghish, hindi",
+      qualification: "puc & above",
+      shiftDetails: "Normal Shift",
+      additionalNotes: "sdfghjkl."
+    },
+    {
       id: "DB-JOB-1",
       title: "Customer Support",
       company: "AITRUIST",
