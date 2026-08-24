@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initEmployerForm();
   initModals();
   initCostCalculator();
-  initCalendarBooking();
   initAutoLeadPopups();
 });
 
