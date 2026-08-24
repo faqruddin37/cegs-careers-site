@@ -238,7 +238,7 @@ window.openServiceDetailModal = function(serviceId) {
 
     <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.25rem; border-top: 1px solid #e2e8f0;">
       <button class="btn btn-outline" onclick="closeModal()">Close</button>
-      <button class="btn btn-primary" onclick="closeModal(); openBookingModal();">Book Discovery Call</button>
+      <button class="btn btn-primary" onclick="closeModal(); openBookingModal();">Request Candidates</button>
     </div>
   `;
 

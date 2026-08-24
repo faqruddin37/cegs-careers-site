@@ -1437,120 +1437,675 @@ function initCostCalculator() {
   if (roleTypeSelect) roleTypeSelect.addEventListener('change', updateCalc);
 }
 
-// 5. Recruitment Partnership Enquiry Form Modal
+// ==========================================================================
+// 5. Client Hiring Requirement / Request Candidates Multi-Step Form
+// ==========================================================================
+window.clientReqData = {
+  companyName: '',
+  contactPerson: '',
+  workEmail: '',
+  phone: '',
+  industry: '',
+  companyWebsite: '',
+  jobTitle: '',
+  numberOfOpenings: '1',
+  experienceRequired: '',
+  jobLocation: '',
+  workMode: 'On-site',
+  employmentType: 'Full Time',
+  requiredSkills: ['React', 'Node.js', 'JavaScript'],
+  qualification: 'Any Graduate',
+  minCTC: '',
+  maxCTC: '',
+  noticePeriod: 'Immediate',
+  preferredShift: 'Day Shift',
+  languages: ['English', 'Hindi'],
+  candidateRequirements: '',
+  hiringTimeline: 'Immediately',
+  interviewMode: 'Online',
+  interviewRounds: '2',
+  additionalRequirements: '',
+  jobDescriptionFileName: '',
+  consent: true
+};
+
+window.reqCurrentStep = 1;
+
 window.openBookingModal = function() {
+  window.reqCurrentStep = 1;
   const content = `
-    <div class="partnership-modal-content">
-      <div class="partnership-form-header">
-        <span class="badge badge-teal">Business Collaboration</span>
-        <h2>Recruitment Partnership Enquiry Form</h2>
-        <p>Fields marked <span class="required-star">*</span> are required.</p>
+    <div class="req-wizard-modal">
+      <div class="req-wizard-header">
+        <span class="badge badge-teal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+          Client Talent Intake
+        </span>
+        <h2>Request Recruitment Support</h2>
+        <p>Tell us about your hiring requirements and our recruitment team will help you find the right candidates.</p>
       </div>
 
-      <form id="partnershipEnquiryModalForm" onsubmit="handlePartnershipSubmit(event)">
-        <div class="partnership-form-grid">
-          <div class="form-group">
-            <label class="form-label">Company or Agency Name <span class="required-star">*</span></label>
-            <input type="text" class="form-control" name="company" placeholder="e.g. Acme Technologies" required />
-          </div>
+      <!-- Compact 4-Step Progress Indicator -->
+      <div class="req-stepper-bar" id="reqStepperBar">
+        <div class="req-step-item active" id="reqStepIndicator-1">
+          <span class="req-step-num">1</span>
+          <span class="req-step-text">Company</span>
+        </div>
+        <div class="req-step-item" id="reqStepIndicator-2">
+          <span class="req-step-num">2</span>
+          <span class="req-step-text">Position</span>
+        </div>
+        <div class="req-step-item" id="reqStepIndicator-3">
+          <span class="req-step-num">3</span>
+          <span class="req-step-text">Candidate</span>
+        </div>
+        <div class="req-step-item" id="reqStepIndicator-4">
+          <span class="req-step-num">4</span>
+          <span class="req-step-text">Timeline</span>
+        </div>
+      </div>
 
-          <div class="form-group">
-            <label class="form-label">Contact Person Name <span class="required-star">*</span></label>
-            <input type="text" class="form-control" name="name" placeholder="Full Name" required />
-          </div>
+      <form id="clientRequirementForm" onsubmit="reqSubmitForm(event)" novalidate>
+        
+        <!-- STEP 1: COMPANY DETAILS -->
+        <div class="req-step-container active" id="reqStepPanel-1">
+          <div class="req-step-heading">About Your Company</div>
+          <div class="req-form-grid">
+            <div class="req-form-group" id="group-companyName">
+              <label class="form-label">Company Name <span class="required-star">*</span></label>
+              <input type="text" class="form-control" id="reqInput-companyName" placeholder="Enter company name" value="${window.clientReqData.companyName}" oninput="reqClearError('companyName')" />
+              <div class="req-error-msg" id="err-companyName">Company name is required</div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Official Email <span class="required-star">*</span></label>
-            <input type="email" class="form-control" name="email" placeholder="name@company.com" required />
-          </div>
+            <div class="req-form-group" id="group-contactPerson">
+              <label class="form-label">Contact Person Name <span class="required-star">*</span></label>
+              <input type="text" class="form-control" id="reqInput-contactPerson" placeholder="Your full name" value="${window.clientReqData.contactPerson}" oninput="reqClearError('contactPerson')" />
+              <div class="req-error-msg" id="err-contactPerson">Contact person name is required</div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Contact Number <span class="required-star">*</span></label>
-            <input type="tel" class="form-control" name="phone" placeholder="+91 98765 43210" pattern="[+0-9()\\s-]{10,20}" title="Enter a valid contact number" required />
-          </div>
+            <div class="req-form-group" id="group-workEmail">
+              <label class="form-label">Work Email <span class="required-star">*</span></label>
+              <input type="email" class="form-control" id="reqInput-workEmail" placeholder="name@company.com" value="${window.clientReqData.workEmail}" oninput="reqClearError('workEmail')" />
+              <div class="req-error-msg" id="err-workEmail">Please enter a valid work email address</div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Company Website</label>
-            <input type="url" class="form-control" name="companyWebsite" placeholder="https://" />
-          </div>
+            <div class="req-form-group" id="group-phone">
+              <label class="form-label">Phone Number <span class="required-star">*</span></label>
+              <input type="tel" class="form-control" id="reqInput-phone" placeholder="+91 XXXXX XXXXX" value="${window.clientReqData.phone}" oninput="reqClearError('phone')" />
+              <div class="req-error-msg" id="err-phone">Please enter a valid contact phone number</div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Business Location <span class="required-star">*</span></label>
-            <input type="text" class="form-control" name="location" placeholder="e.g. Bengaluru, Karnataka" required />
-          </div>
+            <div class="req-form-group" id="group-industry">
+              <label class="form-label">Industry <span class="required-star">*</span></label>
+              <select class="form-control" id="reqInput-industry" onchange="reqClearError('industry')">
+                <option value="" disabled ${!window.clientReqData.industry ? 'selected' : ''}>Select Industry</option>
+                <option value="IT & Software" ${window.clientReqData.industry === 'IT & Software' ? 'selected' : ''}>IT & Software</option>
+                <option value="Banking & Financial Services" ${window.clientReqData.industry === 'Banking & Financial Services' ? 'selected' : ''}>Banking & Financial Services</option>
+                <option value="BPO / Customer Support" ${window.clientReqData.industry === 'BPO / Customer Support' ? 'selected' : ''}>BPO / Customer Support</option>
+                <option value="Healthcare" ${window.clientReqData.industry === 'Healthcare' ? 'selected' : ''}>Healthcare</option>
+                <option value="Manufacturing" ${window.clientReqData.industry === 'Manufacturing' ? 'selected' : ''}>Manufacturing</option>
+                <option value="Retail" ${window.clientReqData.industry === 'Retail' ? 'selected' : ''}>Retail</option>
+                <option value="Education" ${window.clientReqData.industry === 'Education' ? 'selected' : ''}>Education</option>
+                <option value="E-commerce" ${window.clientReqData.industry === 'E-commerce' ? 'selected' : ''}>E-commerce</option>
+                <option value="Logistics" ${window.clientReqData.industry === 'Logistics' ? 'selected' : ''}>Logistics</option>
+                <option value="Other" ${window.clientReqData.industry === 'Other' ? 'selected' : ''}>Other</option>
+              </select>
+              <div class="req-error-msg" id="err-industry">Please select your industry sector</div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Type of Partnership <span class="required-star">*</span></label>
-            <select class="form-control" name="partnershipType" required>
-              <option value="" disabled selected>Select Partnership Type</option>
-              <option>Recruitment vendor partnership</option>
-              <option>Sub-vendor partnership</option>
-              <option>Client hiring partnership</option>
-              <option>RPO collaboration</option>
-              <option>Staffing collaboration</option>
-              <option>Other business collaboration</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Geographic Coverage <span class="required-star">*</span></label>
-            <input type="text" class="form-control" name="geographicCoverage" placeholder="Example: Bengaluru / Pan India" required />
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Industries or Roles Covered <span class="required-star">*</span></label>
-            <textarea class="form-control" name="industry" rows="3" placeholder="e.g. Software Engineering, IT Infrastructure, BFSI, BPO, HR, Logistics..." required></textarea>
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Brief Company Introduction <span class="required-star">*</span></label>
-            <textarea class="form-control" name="companyIntroduction" rows="3" placeholder="Tell us about your organization, team size, and core business offerings..." required></textarea>
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Existing Client or Recruitment Network</label>
-            <textarea class="form-control" name="existingNetwork" rows="2" placeholder="Key enterprise client sectors, talent pools, or candidate network reach..."></textarea>
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Partnership Requirement <span class="required-star">*</span></label>
-            <textarea class="form-control" name="role" rows="3" placeholder="Describe your hiring mandates, volume delivery requirements, or collaboration goals..." required></textarea>
-          </div>
-
-          <div class="form-group full-width">
-            <label class="form-label">Additional Message</label>
-            <textarea class="form-control" name="message" rows="2" placeholder="Any special commercial models, turnaround timeframes, or notes..."></textarea>
-          </div>
-
-          <div class="form-group full-width consent-box">
-            <label class="checkbox-label">
-              <input type="checkbox" name="consent" value="yes" required />
-              <span>I consent to CEGS using these details for legitimate recruitment, hiring or enquiry follow-up.</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="privacyAcknowledged" value="yes" required />
-              <span>I have read and accept the <a href="#about" target="_blank">Privacy Notice</a>.</span>
-            </label>
+            <div class="req-form-group" id="group-companyWebsite">
+              <label class="form-label">Company Website</label>
+              <input type="url" class="form-control" id="reqInput-companyWebsite" placeholder="https://company.com" value="${window.clientReqData.companyWebsite}" />
+            </div>
           </div>
         </div>
 
-        <p class="form-disclaimer-note">Commercials, candidate ownership and mandate authority are confirmed in writing before any recruitment activity begins.</p>
+        <!-- STEP 2: HIRING REQUIREMENT -->
+        <div class="req-step-container" id="reqStepPanel-2">
+          <div class="req-step-heading">Tell Us About The Role</div>
+          <div class="req-form-grid">
+            <div class="req-form-group" id="group-jobTitle">
+              <label class="form-label">Position / Job Title <span class="required-star">*</span></label>
+              <input type="text" class="form-control" id="reqInput-jobTitle" placeholder="e.g. Software Developer" value="${window.clientReqData.jobTitle}" oninput="reqClearError('jobTitle')" />
+              <div class="req-error-msg" id="err-jobTitle">Position or job title is required</div>
+            </div>
 
-        <button type="submit" class="btn btn-primary btn-submit-partnership">
-          <span>Submit Partnership Enquiry</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </button>
+            <div class="req-form-group" id="group-numberOfOpenings">
+              <label class="form-label">Number of Openings <span class="required-star">*</span></label>
+              <input type="number" min="1" class="form-control" id="reqInput-numberOfOpenings" placeholder="e.g. 5" value="${window.clientReqData.numberOfOpenings}" oninput="reqClearError('numberOfOpenings')" />
+              <div class="req-error-msg" id="err-numberOfOpenings">Please specify number of vacancies (min 1)</div>
+            </div>
+
+            <div class="req-form-group" id="group-experienceRequired">
+              <label class="form-label">Experience Required <span class="required-star">*</span></label>
+              <select class="form-control" id="reqInput-experienceRequired" onchange="reqClearError('experienceRequired')">
+                <option value="" disabled ${!window.clientReqData.experienceRequired ? 'selected' : ''}>Select Experience Level</option>
+                <option value="Fresher" ${window.clientReqData.experienceRequired === 'Fresher' ? 'selected' : ''}>Fresher</option>
+                <option value="0–1 Years" ${window.clientReqData.experienceRequired === '0–1 Years' ? 'selected' : ''}>0–1 Years</option>
+                <option value="1–3 Years" ${window.clientReqData.experienceRequired === '1–3 Years' ? 'selected' : ''}>1–3 Years</option>
+                <option value="3–5 Years" ${window.clientReqData.experienceRequired === '3–5 Years' ? 'selected' : ''}>3–5 Years</option>
+                <option value="5–8 Years" ${window.clientReqData.experienceRequired === '5–8 Years' ? 'selected' : ''}>5–8 Years</option>
+                <option value="8+ Years" ${window.clientReqData.experienceRequired === '8+ Years' ? 'selected' : ''}>8+ Years</option>
+              </select>
+              <div class="req-error-msg" id="err-experienceRequired">Please select experience level</div>
+            </div>
+
+            <div class="req-form-group" id="group-jobLocation">
+              <label class="form-label">Job Location <span class="required-star">*</span></label>
+              <input type="text" class="form-control" id="reqInput-jobLocation" placeholder="e.g. Bangalore / Pan India" value="${window.clientReqData.jobLocation}" oninput="reqClearError('jobLocation')" />
+              <div class="req-error-msg" id="err-jobLocation">Job location is required</div>
+            </div>
+
+            <!-- Work Mode Cards -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Work Mode <span class="required-star">*</span></label>
+              <div class="req-cards-grid">
+                <div class="req-choice-card ${window.clientReqData.workMode === 'On-site' ? 'active' : ''}" onclick="reqSelectChoice(this, 'workMode', 'On-site')">
+                  <span class="req-card-icon">🏢</span>
+                  <span class="req-card-label">On-site</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.workMode === 'Hybrid' ? 'active' : ''}" onclick="reqSelectChoice(this, 'workMode', 'Hybrid')">
+                  <span class="req-card-icon">🔄</span>
+                  <span class="req-card-label">Hybrid</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.workMode === 'Remote' ? 'active' : ''}" onclick="reqSelectChoice(this, 'workMode', 'Remote')">
+                  <span class="req-card-icon">🌐</span>
+                  <span class="req-card-label">Remote</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Employment Type Cards -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Employment Type <span class="required-star">*</span></label>
+              <div class="req-pills-group">
+                <div class="req-pill-item ${window.clientReqData.employmentType === 'Full Time' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'employmentType', 'Full Time')">Full Time</div>
+                <div class="req-pill-item ${window.clientReqData.employmentType === 'Contract' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'employmentType', 'Contract')">Contract</div>
+                <div class="req-pill-item ${window.clientReqData.employmentType === 'Internship' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'employmentType', 'Internship')">Internship</div>
+                <div class="req-pill-item ${window.clientReqData.employmentType === 'Temporary' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'employmentType', 'Temporary')">Temporary</div>
+              </div>
+            </div>
+
+            <!-- Required Skills Interactive Tags -->
+            <div class="req-form-group full-width" id="group-requiredSkills">
+              <label class="form-label">Required Skills <span class="required-star">*</span> <small class="req-helper-text">Type skill and press Enter or comma</small></label>
+              <div class="req-tags-container" id="reqTagsBox" onclick="document.getElementById('reqTagInput').focus()">
+                <div id="reqTagChips" style="display: flex; flex-wrap: wrap; gap: 0.4rem;"></div>
+                <input type="text" class="req-tags-input" id="reqTagInput" placeholder="Add skill (e.g. React)..." onkeydown="reqHandleTagKey(event)" />
+              </div>
+              <div class="req-error-msg" id="err-requiredSkills">Please specify at least one skill or technology</div>
+              
+              <!-- Quick Suggested Skills -->
+              <div class="req-suggested-tags">
+                <span style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-right: 0.2rem;">Quick Add:</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('React.js')">+ React.js</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Node.js')">+ Node.js</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Python')">+ Python</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Java')">+ Java</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Inside Sales')">+ Inside Sales</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Customer Support')">+ Customer Support</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('Payroll')">+ Payroll</span>
+                <span class="req-suggest-chip" onclick="reqAddTag('SQL')">+ SQL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: IDEAL CANDIDATE -->
+        <div class="req-step-container" id="reqStepPanel-3">
+          <div class="req-step-heading">What Kind of Candidate Do You Need?</div>
+          <div class="req-form-grid">
+            <div class="req-form-group">
+              <label class="form-label">Required Qualification</label>
+              <select class="form-control" id="reqInput-qualification">
+                <option value="Any Graduate" ${window.clientReqData.qualification === 'Any Graduate' ? 'selected' : ''}>Any Graduate</option>
+                <option value="BCA" ${window.clientReqData.qualification === 'BCA' ? 'selected' : ''}>BCA</option>
+                <option value="B.Tech / BE" ${window.clientReqData.qualification === 'B.Tech / BE' ? 'selected' : ''}>B.Tech / BE</option>
+                <option value="MBA" ${window.clientReqData.qualification === 'MBA' ? 'selected' : ''}>MBA</option>
+                <option value="MCA" ${window.clientReqData.qualification === 'MCA' ? 'selected' : ''}>MCA</option>
+                <option value="Diploma" ${window.clientReqData.qualification === 'Diploma' ? 'selected' : ''}>Diploma</option>
+                <option value="Post Graduate" ${window.clientReqData.qualification === 'Post Graduate' ? 'selected' : ''}>Post Graduate</option>
+                <option value="Other" ${window.clientReqData.qualification === 'Other' ? 'selected' : ''}>Other</option>
+              </select>
+            </div>
+
+            <!-- Salary CTC Range -->
+            <div class="req-form-group">
+              <label class="form-label">Salary / CTC Range</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <input type="text" class="form-control" id="reqInput-minCTC" placeholder="Min CTC (e.g. 4 LPA)" value="${window.clientReqData.minCTC}" />
+                <input type="text" class="form-control" id="reqInput-maxCTC" placeholder="Max CTC (e.g. 8 LPA)" value="${window.clientReqData.maxCTC}" />
+              </div>
+            </div>
+
+            <!-- Notice Period -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Notice Period Preference</label>
+              <div class="req-pills-group">
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === 'Immediate' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', 'Immediate')">Immediate</div>
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === '15 Days' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', '15 Days')">15 Days</div>
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === '30 Days' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', '30 Days')">30 Days</div>
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === '60 Days' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', '60 Days')">60 Days</div>
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === '90 Days' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', '90 Days')">90 Days</div>
+                <div class="req-pill-item ${window.clientReqData.noticePeriod === 'Flexible' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'noticePeriod', 'Flexible')">Flexible</div>
+              </div>
+            </div>
+
+            <!-- Preferred Shift -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Preferred Shift</label>
+              <div class="req-pills-group">
+                <div class="req-pill-item ${window.clientReqData.preferredShift === 'Day Shift' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'preferredShift', 'Day Shift')">Day Shift</div>
+                <div class="req-pill-item ${window.clientReqData.preferredShift === 'Night Shift' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'preferredShift', 'Night Shift')">Night Shift</div>
+                <div class="req-pill-item ${window.clientReqData.preferredShift === 'Rotational' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'preferredShift', 'Rotational')">Rotational</div>
+                <div class="req-pill-item ${window.clientReqData.preferredShift === 'Flexible' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'preferredShift', 'Flexible')">Flexible</div>
+              </div>
+            </div>
+
+            <!-- Languages Required Multi-Select -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Languages Required <small class="req-helper-text">Select all that apply</small></label>
+              <div class="req-pills-group" id="reqLanguagesPills">
+                <div class="req-pill-item ${window.clientReqData.languages.includes('English') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'English')">English</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Hindi') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Hindi')">Hindi</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Kannada') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Kannada')">Kannada</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Tamil') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Tamil')">Tamil</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Telugu') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Telugu')">Telugu</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Marathi') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Marathi')">Marathi</div>
+                <div class="req-pill-item ${window.clientReqData.languages.includes('Other') ? 'active' : ''}" onclick="reqToggleMultiPill(this, 'languages', 'Other')">Other</div>
+              </div>
+            </div>
+
+            <!-- Must-Have Skills / Requirements -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Must-Have Skills / Candidate Requirements</label>
+              <textarea class="form-control" id="reqInput-candidateRequirements" rows="3" placeholder="Tell us about the skills, experience, qualifications or other requirements the candidate must have...">${window.clientReqData.candidateRequirements}</textarea>
+              <small class="req-helper-text">Example: Candidate should have good communication skills and minimum 2 years of experience in React.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: HIRING TIMELINE -->
+        <div class="req-step-container" id="reqStepPanel-4">
+          <div class="req-step-heading">Tell Us About Your Hiring Timeline</div>
+          <div class="req-form-grid">
+            
+            <!-- How soon do you need candidates -->
+            <div class="req-form-group full-width" id="group-hiringTimeline">
+              <label class="form-label">How soon do you need candidates? <span class="required-star">*</span></label>
+              <div class="req-cards-grid">
+                <div class="req-choice-card ${window.clientReqData.hiringTimeline === 'Immediately' ? 'active' : ''}" onclick="reqSelectChoice(this, 'hiringTimeline', 'Immediately')">
+                  <span class="req-card-icon">⚡</span>
+                  <span class="req-card-label">Immediately</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.hiringTimeline === 'Within 1 Week' ? 'active' : ''}" onclick="reqSelectChoice(this, 'hiringTimeline', 'Within 1 Week')">
+                  <span class="req-card-icon">📅</span>
+                  <span class="req-card-label">Within 1 Week</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.hiringTimeline === 'Within 2 Weeks' ? 'active' : ''}" onclick="reqSelectChoice(this, 'hiringTimeline', 'Within 2 Weeks')">
+                  <span class="req-card-icon">🗓️</span>
+                  <span class="req-card-label">Within 2 Weeks</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.hiringTimeline === 'Within 1 Month' ? 'active' : ''}" onclick="reqSelectChoice(this, 'hiringTimeline', 'Within 1 Month')">
+                  <span class="req-card-icon">⏳</span>
+                  <span class="req-card-label">Within 1 Month</span>
+                </div>
+                <div class="req-choice-card ${window.clientReqData.hiringTimeline === 'Flexible' ? 'active' : ''}" onclick="reqSelectChoice(this, 'hiringTimeline', 'Flexible')">
+                  <span class="req-card-icon">🎯</span>
+                  <span class="req-card-label">Flexible</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interview Mode -->
+            <div class="req-form-group">
+              <label class="form-label">Preferred Interview Mode</label>
+              <div class="req-pills-group">
+                <div class="req-pill-item ${window.clientReqData.interviewMode === 'Online' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'interviewMode', 'Online')">💻 Online</div>
+                <div class="req-pill-item ${window.clientReqData.interviewMode === 'Offline' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'interviewMode', 'Offline')">🏢 Offline</div>
+                <div class="req-pill-item ${window.clientReqData.interviewMode === 'Both' ? 'active' : ''}" onclick="reqSelectPillSingle(this, 'interviewMode', 'Both')">🔄 Both</div>
+              </div>
+            </div>
+
+            <!-- Interview Rounds -->
+            <div class="req-form-group">
+              <label class="form-label">Number of Interview Rounds</label>
+              <input type="number" min="1" max="10" class="form-control" id="reqInput-interviewRounds" placeholder="e.g. 2" value="${window.clientReqData.interviewRounds || '2'}" />
+            </div>
+
+            <!-- Additional Hiring Requirements -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Additional Hiring Requirements</label>
+              <textarea class="form-control" id="reqInput-additionalRequirements" rows="2" placeholder="Share any additional information about the role, interview process or candidate expectations...">${window.clientReqData.additionalRequirements}</textarea>
+            </div>
+
+            <!-- Upload Job Description -->
+            <div class="req-form-group full-width">
+              <label class="form-label">Upload Job Description <small class="req-helper-text">Optional (PDF, DOC, DOCX - Max 5MB)</small></label>
+              <div class="req-dropzone" onclick="document.getElementById('reqFileInput').click()">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-primary); margin-bottom: 0.35rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <div style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">Click to browse or drop job description file</div>
+                <div style="font-size: 0.75rem; color: #64748b;">Supports PDF, DOC, DOCX up to 5 MB</div>
+                <input type="file" id="reqFileInput" class="req-dropzone-input" accept=".pdf,.doc,.docx" onchange="reqHandleFileUpload(this)" />
+              </div>
+              <div class="req-file-preview ${window.clientReqData.jobDescriptionFileName ? 'has-file' : ''}" id="reqFilePreview">
+                <span style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary);" id="reqFileNameText">
+                  📄 ${window.clientReqData.jobDescriptionFileName || ''}
+                </span>
+                <button type="button" class="btn btn-sm" style="padding: 0.2rem 0.5rem; background: #ffffff; color: #ef4444; border: 1px solid #e2e8f0;" onclick="reqRemoveFile(event)">Remove</button>
+              </div>
+              <div class="req-error-msg" id="err-file">File size exceeds 5MB or invalid format</div>
+            </div>
+
+            <!-- Consent Checkbox -->
+            <div class="req-form-group full-width consent-box" id="group-consent">
+              <label class="checkbox-label">
+                <input type="checkbox" id="reqConsentCheckbox" ${window.clientReqData.consent ? 'checked' : ''} onchange="reqClearError('consent')" />
+                <span>I agree to be contacted by CEGS regarding this hiring requirement. <span class="required-star">*</span></span>
+              </label>
+              <div class="req-error-msg" id="err-consent">Please agree to be contacted regarding your requirement</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- WIZARD FOOTER NAVIGATION -->
+        <div class="req-wizard-footer">
+          <button type="button" class="btn btn-outline" id="reqBackBtn" style="visibility: hidden;" onclick="reqNavigateStep(-1)">
+            ← Back
+          </button>
+          
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" id="reqNextBtn" onclick="reqNavigateStep(1)">
+              Continue →
+            </button>
+          </div>
+        </div>
+
       </form>
     </div>
   `;
 
   openModal(content);
+  reqRenderTagChips();
 };
 
-window.handlePartnershipSubmit = function(e) {
-  e.preventDefault();
-  closeModal();
-  showToast("Partnership enquiry submitted successfully! Our enterprise partnerships team will contact you within 2 business hours.");
+window.reqClearError = function(fieldId) {
+  const grp = document.getElementById('group-' + fieldId);
+  if (grp) grp.classList.remove('has-error');
+  const input = document.getElementById('reqInput-' + fieldId);
+  if (input) input.classList.remove('input-error');
+};
+
+window.reqShowError = function(fieldId) {
+  const grp = document.getElementById('group-' + fieldId);
+  if (grp) grp.classList.add('has-error');
+  const input = document.getElementById('reqInput-' + fieldId);
+  if (input) {
+    input.classList.add('input-error');
+    input.focus();
+  }
+};
+
+window.reqValidateCurrentStep = function(step) {
+  let isValid = true;
+
+  if (step === 1) {
+    const comp = (document.getElementById('reqInput-companyName')?.value || '').trim();
+    const person = (document.getElementById('reqInput-contactPerson')?.value || '').trim();
+    const email = (document.getElementById('reqInput-workEmail')?.value || '').trim();
+    const phone = (document.getElementById('reqInput-phone')?.value || '').trim();
+    const industry = document.getElementById('reqInput-industry')?.value || '';
+
+    if (!comp) { reqShowError('companyName'); isValid = false; }
+    if (!person) { reqShowError('contactPerson'); isValid = false; }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) { reqShowError('workEmail'); isValid = false; }
+    if (!phone || phone.length < 7) { reqShowError('phone'); isValid = false; }
+    if (!industry) { reqShowError('industry'); isValid = false; }
+
+    if (isValid) {
+      window.clientReqData.companyName = comp;
+      window.clientReqData.contactPerson = person;
+      window.clientReqData.workEmail = email;
+      window.clientReqData.phone = phone;
+      window.clientReqData.industry = industry;
+      window.clientReqData.companyWebsite = document.getElementById('reqInput-companyWebsite')?.value || '';
+    }
+  } else if (step === 2) {
+    const title = (document.getElementById('reqInput-jobTitle')?.value || '').trim();
+    const openings = (document.getElementById('reqInput-numberOfOpenings')?.value || '').trim();
+    const exp = document.getElementById('reqInput-experienceRequired')?.value || '';
+    const loc = (document.getElementById('reqInput-jobLocation')?.value || '').trim();
+
+    if (!title) { reqShowError('jobTitle'); isValid = false; }
+    if (!openings || parseInt(openings) < 1) { reqShowError('numberOfOpenings'); isValid = false; }
+    if (!exp) { reqShowError('experienceRequired'); isValid = false; }
+    if (!loc) { reqShowError('jobLocation'); isValid = false; }
+    if (!window.clientReqData.requiredSkills || window.clientReqData.requiredSkills.length === 0) {
+      reqShowError('requiredSkills');
+      isValid = false;
+    }
+
+    if (isValid) {
+      window.clientReqData.jobTitle = title;
+      window.clientReqData.numberOfOpenings = openings;
+      window.clientReqData.experienceRequired = exp;
+      window.clientReqData.jobLocation = loc;
+    }
+  } else if (step === 3) {
+    window.clientReqData.qualification = document.getElementById('reqInput-qualification')?.value || 'Any Graduate';
+    window.clientReqData.minCTC = document.getElementById('reqInput-minCTC')?.value || '';
+    window.clientReqData.maxCTC = document.getElementById('reqInput-maxCTC')?.value || '';
+    window.clientReqData.candidateRequirements = document.getElementById('reqInput-candidateRequirements')?.value || '';
+  } else if (step === 4) {
+    const consent = document.getElementById('reqConsentCheckbox')?.checked;
+    if (!consent) {
+      reqShowError('consent');
+      isValid = false;
+    } else {
+      window.clientReqData.consent = true;
+      window.clientReqData.interviewRounds = document.getElementById('reqInput-interviewRounds')?.value || '2';
+      window.clientReqData.additionalRequirements = document.getElementById('reqInput-additionalRequirements')?.value || '';
+    }
+  }
+
+  return isValid;
+};
+
+window.reqNavigateStep = function(delta) {
+  if (delta > 0) {
+    if (!reqValidateCurrentStep(window.reqCurrentStep)) return;
+    if (window.reqCurrentStep === 4) {
+      reqSubmitForm();
+      return;
+    }
+  }
+
+  const nextStep = window.reqCurrentStep + delta;
+  if (nextStep < 1 || nextStep > 4) return;
+
+  // Update panels
+  document.querySelectorAll('.req-step-container').forEach(p => p.classList.remove('active'));
+  const targetPanel = document.getElementById('reqStepPanel-' + nextStep);
+  if (targetPanel) targetPanel.classList.add('active');
+
+  // Update Stepper Bar Indicators
+  for (let i = 1; i <= 4; i++) {
+    const item = document.getElementById('reqStepIndicator-' + i);
+    if (!item) continue;
+    item.classList.remove('active', 'completed');
+    if (i < nextStep) {
+      item.classList.add('completed');
+      item.querySelector('.req-step-num').innerHTML = '✓';
+    } else if (i === nextStep) {
+      item.classList.add('active');
+      item.querySelector('.req-step-num').innerHTML = i.toString();
+    } else {
+      item.querySelector('.req-step-num').innerHTML = i.toString();
+    }
+  }
+
+  window.reqCurrentStep = nextStep;
+
+  // Update footer button labels
+  const backBtn = document.getElementById('reqBackBtn');
+  const nextBtn = document.getElementById('reqNextBtn');
+
+  if (backBtn) {
+    backBtn.style.visibility = (nextStep === 1) ? 'hidden' : 'visible';
+  }
+
+  if (nextBtn) {
+    if (nextStep === 4) {
+      nextBtn.innerHTML = 'Submit Hiring Requirement';
+      nextBtn.className = 'btn btn-primary';
+    } else {
+      nextBtn.innerHTML = 'Continue →';
+      nextBtn.className = 'btn btn-primary';
+    }
+  }
+};
+
+window.reqSelectChoice = function(el, field, value) {
+  const container = el.parentElement;
+  if (container) {
+    container.querySelectorAll('.req-choice-card').forEach(c => c.classList.remove('active'));
+  }
+  el.classList.add('active');
+  window.clientReqData[field] = value;
+};
+
+window.reqSelectPillSingle = function(el, field, value) {
+  const container = el.parentElement;
+  if (container) {
+    container.querySelectorAll('.req-pill-item').forEach(p => p.classList.remove('active'));
+  }
+  el.classList.add('active');
+  window.clientReqData[field] = value;
+};
+
+window.reqToggleMultiPill = function(el, field, value) {
+  if (!Array.isArray(window.clientReqData[field])) {
+    window.clientReqData[field] = [];
+  }
+  const idx = window.clientReqData[field].indexOf(value);
+  if (idx > -1) {
+    window.clientReqData[field].splice(idx, 1);
+    el.classList.remove('active');
+  } else {
+    window.clientReqData[field].push(value);
+    el.classList.add('active');
+  }
+};
+
+window.reqRenderTagChips = function() {
+  const container = document.getElementById('reqTagChips');
+  if (!container) return;
+  container.innerHTML = (window.clientReqData.requiredSkills || []).map(s => `
+    <span class="req-tag-chip">
+      ${s}
+      <button type="button" onclick="reqRemoveTag('${s}')">×</button>
+    </span>
+  `).join('');
+};
+
+window.reqAddTag = function(skill) {
+  const trimmed = skill.trim();
+  if (!trimmed) return;
+  if (!window.clientReqData.requiredSkills.includes(trimmed)) {
+    window.clientReqData.requiredSkills.push(trimmed);
+    reqRenderTagChips();
+    reqClearError('requiredSkills');
+  }
+  const input = document.getElementById('reqTagInput');
+  if (input) input.value = '';
+};
+
+window.reqRemoveTag = function(skill) {
+  window.clientReqData.requiredSkills = window.clientReqData.requiredSkills.filter(s => s !== skill);
+  reqRenderTagChips();
+};
+
+window.reqHandleTagKey = function(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.replace(/,/g, '').trim();
+    if (val) reqAddTag(val);
+  }
+};
+
+window.reqHandleFileUpload = function(input) {
+  const file = input.files[0];
+  const err = document.getElementById('err-file');
+  const preview = document.getElementById('reqFilePreview');
+  const nameText = document.getElementById('reqFileNameText');
+
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    if (err) err.style.display = 'block';
+    input.value = '';
+    return;
+  }
+
+  if (err) err.style.display = 'none';
+  window.clientReqData.jobDescriptionFileName = file.name;
+  if (nameText) nameText.innerHTML = `📄 ${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+  if (preview) preview.classList.add('has-file');
+};
+
+window.reqRemoveFile = function(e) {
+  if (e) e.stopPropagation();
+  window.clientReqData.jobDescriptionFileName = '';
+  const input = document.getElementById('reqFileInput');
+  if (input) input.value = '';
+  const preview = document.getElementById('reqFilePreview');
+  if (preview) preview.classList.remove('has-file');
+};
+
+window.reqSubmitForm = function(e) {
+  if (e) e.preventDefault();
+  if (!reqValidateCurrentStep(4)) return;
+
+  // Render Success Screen inside Modal
+  const modalContainer = document.querySelector('.modal-container');
+  const modalBody = document.getElementById('modalBody');
+  if (!modalBody) return;
+
+  modalBody.innerHTML = `
+    <div class="req-success-screen">
+      <div class="req-success-icon-wrap">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h3>Requirement Submitted Successfully!</h3>
+      <p>Thank you for sharing your hiring requirement. Our recruitment team will review your needs and contact you shortly.</p>
+
+      <div class="req-summary-card">
+        <div class="req-summary-item">
+          <small>Company</small>
+          <strong>${window.clientReqData.companyName || 'Enterprise Client'}</strong>
+        </div>
+        <div class="req-summary-item">
+          <small>Position / Role</small>
+          <strong>${window.clientReqData.jobTitle || 'Role Vacancy'}</strong>
+        </div>
+        <div class="req-summary-item">
+          <small>Openings</small>
+          <strong>${window.clientReqData.numberOfOpenings} Vacancies</strong>
+        </div>
+        <div class="req-summary-item">
+          <small>Hiring Timeline</small>
+          <strong>${window.clientReqData.hiringTimeline}</strong>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" style="padding: 0.85rem 2.5rem; font-weight: 700;" onclick="closeModal()">
+        Done
+      </button>
+    </div>
+  `;
+
+  showToast("Hiring requirement received! Our senior recruiter will reach out shortly.");
 };
 
 // 6. Employer Talent Request Form Submission
