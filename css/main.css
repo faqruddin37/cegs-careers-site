@@ -3142,3 +3142,154 @@ textarea.form-control {
   flex-wrap: wrap;
   gap: 1.5rem;
 }
+
+/* ==========================================================================
+   Recruitment Partnership Enquiry Form Styles
+   ========================================================================== */
+.modal-container:has(.partnership-modal-content) {
+  max-width: 760px;
+}
+
+.partnership-modal-content {
+  padding: 0.5rem 0;
+}
+
+.partnership-form-header {
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 1.25rem;
+}
+
+.partnership-form-header .badge {
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.partnership-form-header h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  line-height: 1.25;
+  margin-bottom: 0.35rem;
+}
+
+.partnership-form-header p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.partnership-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.15rem 1.25rem;
+}
+
+.partnership-form-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.partnership-form-grid .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.partnership-form-grid .form-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.required-star {
+  color: #ef4444;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.partnership-form-grid .form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-heading);
+  background: #ffffff;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.partnership-form-grid .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3.5px rgba(13, 94, 114, 0.12);
+}
+
+.partnership-form-grid textarea.form-control {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.consent-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #334155;
+  cursor: pointer;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.checkbox-label a {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.form-disclaimer-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 1.25rem;
+  font-style: italic;
+}
+
+.btn-submit-partnership {
+  width: 100%;
+  padding: 0.95rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 768px) {
+  .partnership-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

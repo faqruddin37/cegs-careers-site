@@ -1437,122 +1437,121 @@ function initCostCalculator() {
   if (roleTypeSelect) roleTypeSelect.addEventListener('change', updateCalc);
 }
 
-// 5. Booking Consultation Modal (Styled like reference HRMS Calendar)
+// 5. Recruitment Partnership Enquiry Form Modal
 window.openBookingModal = function() {
   const content = `
-    <div style="margin-bottom: 1.25rem;">
-      <span class="badge badge-teal" style="margin-bottom: 0.5rem;">Free 15-Min Discovery Session</span>
-      <h2 style="font-size: 1.5rem; color: #0f1c2d;">Schedule Strategy Consultation</h2>
-      <p style="font-size: 0.875rem; color: #64748b;">Discuss staffing requirements, payroll compliance, or tech engineering with our principal consultants.</p>
-    </div>
-
-    <form onsubmit="handleBookingSubmit(event)">
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <div>
-          <label class="form-label">Select Preferred Date</label>
-          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 0.25rem;">
-            <button type="button" class="cal-slot active" onclick="selectCalDate(this)">
-              <small style="display:block; color:#64748b;">Mon</small><strong>18 Aug</strong>
-            </button>
-            <button type="button" class="cal-slot" onclick="selectCalDate(this)">
-              <small style="display:block; color:#64748b;">Tue</small><strong>19 Aug</strong>
-            </button>
-            <button type="button" class="cal-slot" onclick="selectCalDate(this)">
-              <small style="display:block; color:#64748b;">Wed</small><strong>20 Aug</strong>
-            </button>
-            <button type="button" class="cal-slot" onclick="selectCalDate(this)">
-              <small style="display:block; color:#64748b;">Thu</small><strong>21 Aug</strong>
-            </button>
-            <button type="button" class="cal-slot" onclick="selectCalDate(this)">
-              <small style="display:block; color:#64748b;">Fri</small><strong>22 Aug</strong>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label class="form-label">Preferred Time Slot (IST)</label>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.25rem;">
-            <button type="button" class="time-slot active" onclick="selectTimeSlot(this)">11:00 AM</button>
-            <button type="button" class="time-slot" onclick="selectTimeSlot(this)">02:30 PM</button>
-            <button type="button" class="time-slot" onclick="selectTimeSlot(this)">04:00 PM</button>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div>
-            <label class="form-label">Your Name *</label>
-            <input type="text" class="form-control" placeholder="Full Name" required />
-          </div>
-          <div>
-            <label class="form-label">Work Email *</label>
-            <input type="email" class="form-control" placeholder="name@company.com" required />
-          </div>
-        </div>
-
-        <div>
-          <label class="form-label">Key Discussion Focus</label>
-          <select class="form-control">
-            <option>Immediate Staffing / IT Hiring</option>
-            <option>Payroll Management & Compliance Audit</option>
-            <option>Web Development & Software Engineering</option>
-            <option>Inside Sales & BPO Squad Setup</option>
-            <option>Comprehensive HR Advisory</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn btn-gradient" style="margin-top: 0.5rem; width: 100%;">Confirm Consultation Booking</button>
+    <div class="partnership-modal-content">
+      <div class="partnership-form-header">
+        <span class="badge badge-teal">Business Collaboration</span>
+        <h2>Recruitment Partnership Enquiry Form</h2>
+        <p>Fields marked <span class="required-star">*</span> are required.</p>
       </div>
-    </form>
+
+      <form id="partnershipEnquiryModalForm" onsubmit="handlePartnershipSubmit(event)">
+        <div class="partnership-form-grid">
+          <div class="form-group">
+            <label class="form-label">Company or Agency Name <span class="required-star">*</span></label>
+            <input type="text" class="form-control" name="company" placeholder="e.g. Acme Technologies" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Contact Person Name <span class="required-star">*</span></label>
+            <input type="text" class="form-control" name="name" placeholder="Full Name" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Official Email <span class="required-star">*</span></label>
+            <input type="email" class="form-control" name="email" placeholder="name@company.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Contact Number <span class="required-star">*</span></label>
+            <input type="tel" class="form-control" name="phone" placeholder="+91 98765 43210" pattern="[+0-9()\\s-]{10,20}" title="Enter a valid contact number" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Company Website</label>
+            <input type="url" class="form-control" name="companyWebsite" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Business Location <span class="required-star">*</span></label>
+            <input type="text" class="form-control" name="location" placeholder="e.g. Bengaluru, Karnataka" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Type of Partnership <span class="required-star">*</span></label>
+            <select class="form-control" name="partnershipType" required>
+              <option value="" disabled selected>Select Partnership Type</option>
+              <option>Recruitment vendor partnership</option>
+              <option>Sub-vendor partnership</option>
+              <option>Client hiring partnership</option>
+              <option>RPO collaboration</option>
+              <option>Staffing collaboration</option>
+              <option>Other business collaboration</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Geographic Coverage <span class="required-star">*</span></label>
+            <input type="text" class="form-control" name="geographicCoverage" placeholder="Example: Bengaluru / Pan India" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Industries or Roles Covered <span class="required-star">*</span></label>
+            <textarea class="form-control" name="industry" rows="3" placeholder="e.g. Software Engineering, IT Infrastructure, BFSI, BPO, HR, Logistics..." required></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Brief Company Introduction <span class="required-star">*</span></label>
+            <textarea class="form-control" name="companyIntroduction" rows="3" placeholder="Tell us about your organization, team size, and core business offerings..." required></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Existing Client or Recruitment Network</label>
+            <textarea class="form-control" name="existingNetwork" rows="2" placeholder="Key enterprise client sectors, talent pools, or candidate network reach..."></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Partnership Requirement <span class="required-star">*</span></label>
+            <textarea class="form-control" name="role" rows="3" placeholder="Describe your hiring mandates, volume delivery requirements, or collaboration goals..." required></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Additional Message</label>
+            <textarea class="form-control" name="message" rows="2" placeholder="Any special commercial models, turnaround timeframes, or notes..."></textarea>
+          </div>
+
+          <div class="form-group full-width consent-box">
+            <label class="checkbox-label">
+              <input type="checkbox" name="consent" value="yes" required />
+              <span>I consent to CEGS using these details for legitimate recruitment, hiring or enquiry follow-up.</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="privacyAcknowledged" value="yes" required />
+              <span>I have read and accept the <a href="#about" target="_blank">Privacy Notice</a>.</span>
+            </label>
+          </div>
+        </div>
+
+        <p class="form-disclaimer-note">Commercials, candidate ownership and mandate authority are confirmed in writing before any recruitment activity begins.</p>
+
+        <button type="submit" class="btn btn-primary btn-submit-partnership">
+          <span>Submit Partnership Enquiry</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </form>
+    </div>
   `;
 
   openModal(content);
 };
 
-window.selectCalDate = function(btn) {
-  document.querySelectorAll('.cal-slot').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-};
-
-window.selectTimeSlot = function(btn) {
-  document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-};
-
-window.handleBookingSubmit = function(e) {
+window.handlePartnershipSubmit = function(e) {
   e.preventDefault();
   closeModal();
-  showToast("Discovery call confirmed! Calendar invite sent to your work email.");
+  showToast("Partnership enquiry submitted successfully! Our enterprise partnerships team will contact you within 2 business hours.");
 };
-
-function initCalendarBooking() {
-  // Styles for the interactive modal calendar
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .cal-slot, .time-slot {
-      background: #f8fafc;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 0.6rem 0.3rem;
-      cursor: pointer;
-      text-align: center;
-      font-size: 0.85rem;
-      transition: all 0.2s ease;
-    }
-    .cal-slot:hover, .time-slot:hover {
-      border-color: #0d5e72;
-      background: #ffffff;
-    }
-    .cal-slot.active, .time-slot.active {
-      background: #0d5e72;
-      color: #ffffff;
-      border-color: #0d5e72;
-    }
-    .cal-slot.active small {
-      color: rgba(255,255,255,0.8) !important;
-    }
-  `;
-  document.head.appendChild(style);
-}
 
 // 6. Employer Talent Request Form Submission
 function initEmployerForm() {
