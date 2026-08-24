@@ -357,7 +357,7 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=2.4"></script>
+  <script src="js/data.js?v=2.6"></script>
   <script>
     let localJobs = [];
 
@@ -514,8 +514,18 @@
       if (editId) {
         const idx = localJobs.findIndex(j => String(j.id) === String(editId));
         if (idx !== -1) localJobs[idx] = jobObj;
+        fetch('/api/jobs', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jobObj)
+        }).catch(() => {});
       } else {
         localJobs.unshift(jobObj);
+        fetch('/api/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jobObj)
+        }).catch(() => {});
       }
 
       localStorage.setItem('cegs_live_jobs', JSON.stringify(localJobs));
@@ -527,6 +537,9 @@
     function deleteJob(jobId) {
       if (!confirm('Are you sure you want to delete this job vacancy?')) return;
       localJobs = localJobs.filter(j => String(j.id) !== String(jobId));
+      fetch('/api/jobs?id=' + encodeURIComponent(jobId), {
+        method: 'DELETE'
+      }).catch(() => {});
       localStorage.setItem('cegs_live_jobs', JSON.stringify(localJobs));
       renderAdminTable();
     }

@@ -894,21 +894,27 @@ let currentSearchQuery = '';
 
 window.fetchLiveDbJobs = function() {
   const tryFetch = (url) => {
-    return fetch(url + '?t=' + Date.now()).then(res => {
+    const sep = url.includes('?') ? '&' : '?';
+    return fetch(url + sep + 't=' + Date.now()).then(res => {
       if (!res.ok) throw new Error('API unavailable');
       return res.json();
     });
   };
 
-  tryFetch('backend/api/jobs.php')
-    .catch(() => tryFetch('api/jobs.php'))
+  tryFetch('/api/jobs')
+    .catch(() => tryFetch('api/jobs'))
+    .catch(() => tryFetch('backend/api/jobs.php'))
     .then(data => {
       if (data && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
         CEGS_DATA.liveJobs = data.data.map(item => {
+          const roleTitle = item.title || item.job_role || 'Job Vacancy';
+          const compName = item.company || item.company_name || 'CEGS Client';
+          const addNotes = item.additional_notes || item.additionalNotes || item.description || '';
+
           // Detect department & badge theme
-          const text = `${item.job_role} ${item.company_name} ${item.additional_notes || ''}`.toLowerCase();
-          let dept = "Staffing & Careers";
-          let badgeColor = "teal";
+          const text = `${roleTitle} ${compName} ${addNotes}`.toLowerCase();
+          let dept = item.department || "Staffing & Careers";
+          let badgeColor = item.badgeColor || "teal";
 
           if (/tech|software|developer|engineer|it|web|cloud|data|frontend|backend|full stack|react|node/i.test(text)) {
             dept = "Technology";
@@ -924,50 +930,51 @@ window.fetchLiveDbJobs = function() {
             badgeColor = "green";
           }
 
-          // Filter tags - hide cab if empty or 'no'
-          const tags = [
-            item.qualification ? `🎓 ${item.qualification}` : null,
-            item.language_required ? `🗣️ ${item.language_required}` : null,
-            item.shift_details ? `⏰ ${item.shift_details}` : null
-          ];
+          const qual = item.qualification || item.experience || '';
+          const lang = item.language_required || item.languageRequired || '';
+          const shift = item.shift_details || item.shiftDetails || item.type || 'Normal Shift';
+          const cab = (item.cab_facility || item.cabFacility || '').trim();
 
-          const cab = (item.cab_facility || '').trim();
-          if (cab && !/^no$|^none$/i.test(cab)) {
-            tags.push(`🚗 Cab: ${cab}`);
-          }
+          const tags = item.tags && Array.isArray(item.tags) ? item.tags : [
+            qual ? `🎓 ${qual}` : null,
+            lang ? `🗣️ ${lang}` : null,
+            shift ? `⏰ ${shift}` : null,
+            cab && !/^no$|^none$/i.test(cab) ? `🚗 Cab: ${cab}` : null
+          ].filter(Boolean);
 
-          // Format Salary
           let salaryFormatted = item.salary || '';
           if (salaryFormatted && !salaryFormatted.includes('₹') && !salaryFormatted.toLowerCase().includes('lpa')) {
             salaryFormatted = `₹${salaryFormatted}`;
           }
 
+          const reqs = item.requirements && Array.isArray(item.requirements) ? item.requirements : [
+            `Educational Qualification: ${qual || 'Any Graduate'}`,
+            `Language Fluency: ${lang || 'English, Hindi'}`,
+            `Shift Schedule: ${shift || 'Day Shift'}`,
+            cab && !/^no$|^none$/i.test(cab) ? `Transport Facility: ${cab}` : null,
+            item.location ? `Work Location: ${item.location}` : null,
+            `Offered Compensation: ${salaryFormatted}`
+          ].filter(Boolean);
+
           return {
-            id: item.id.toString(),
-            title: item.job_role,
-            company: item.company_name,
+            id: String(item.id),
+            title: roleTitle,
+            company: compName,
             department: dept,
             badgeColor: badgeColor,
-            type: item.shift_details || "Full-Time",
-            location: item.location,
-            experience: item.qualification,
+            type: shift || "Full-Time",
+            location: item.location || 'Bangalore',
+            experience: qual,
             salary: salaryFormatted,
-            posted: formatRelativeDateStr(item.posted_date),
-            tags: tags.filter(Boolean),
-            description: item.additional_notes || `Exciting opportunity at ${item.company_name} for ${item.job_role}. Requires ${item.qualification} with ${item.language_required} fluency.`,
-            requirements: [
-              `Educational Qualification: ${item.qualification || 'Any Graduate'}`,
-              `Language Fluency: ${item.language_required || 'English, Hindi'}`,
-              `Shift Schedule: ${item.shift_details || 'Day Shift'}`,
-              cab && !/^no$|^none$/i.test(cab) ? `Transport Facility: ${cab}` : null,
-              item.location ? `Work Location: ${item.location}` : null,
-              `Offered Compensation: ${salaryFormatted}`
-            ].filter(Boolean),
+            posted: item.posted || formatRelativeDateStr(item.posted_date),
+            tags: tags,
+            description: addNotes || `Exciting opportunity at ${compName} for ${roleTitle}.`,
+            requirements: reqs,
             cabFacility: cab,
-            languageRequired: item.language_required,
-            qualification: item.qualification,
-            shiftDetails: item.shift_details,
-            additionalNotes: item.additional_notes
+            languageRequired: lang,
+            qualification: qual,
+            shiftDetails: shift,
+            additionalNotes: addNotes
           };
         });
 
