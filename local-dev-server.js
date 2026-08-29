@@ -29,42 +29,49 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(parsedUrl.pathname);
 
   // 1. Route API requests
-  if (pathname === '/api/jobs' || pathname === '/api/jobs.js') {
-    let bodyData = '';
-    req.on('data', chunk => {
-      bodyData += chunk;
-    });
-    req.on('end', () => {
-      req.query = parsedUrl.query || {};
-      if (bodyData) {
-        try {
-          req.body = JSON.parse(bodyData);
-        } catch (e) {
-          req.body = bodyData;
+  if (pathname.startsWith('/api/')) {
+    let handlerFile = null;
+    if (pathname === '/api/jobs' || pathname === '/api/jobs.js') handlerFile = './api/jobs.js';
+    else if (pathname === '/api/candidates' || pathname === '/api/candidates.js') handlerFile = './api/candidates.js';
+    else if (pathname === '/api/enquiries' || pathname === '/api/enquiries.js') handlerFile = './api/enquiries.js';
+
+    if (handlerFile) {
+      let bodyData = '';
+      req.on('data', chunk => {
+        bodyData += chunk;
+      });
+      req.on('end', () => {
+        req.query = parsedUrl.query || {};
+        if (bodyData) {
+          try {
+            req.body = JSON.parse(bodyData);
+          } catch (e) {
+            req.body = bodyData;
+          }
+        } else {
+          req.body = {};
         }
-      } else {
-        req.body = {};
-      }
 
-      // Add express-like helper methods
-      res.status = function(code) {
-        this.statusCode = code;
-        return this;
-      };
-      res.json = function(data) {
-        this.setHeader('Content-Type', 'application/json; charset=utf-8');
-        this.end(JSON.stringify(data));
-      };
+        // Add express-like helper methods
+        res.status = function(code) {
+          this.statusCode = code;
+          return this;
+        };
+        res.json = function(data) {
+          this.setHeader('Content-Type', 'application/json; charset=utf-8');
+          this.end(JSON.stringify(data));
+        };
 
-      try {
-        const jobsHandler = require('./api/jobs.js');
-        return jobsHandler(req, res);
-      } catch (apiErr) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: apiErr.message }));
-      }
-    });
-    return;
+        try {
+          const handler = require(handlerFile);
+          return handler(req, res);
+        } catch (apiErr) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ error: apiErr.message }));
+        }
+      });
+      return;
+    }
   }
 
   // 2. Route Admin shorthand
