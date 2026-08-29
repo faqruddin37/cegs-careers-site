@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
 
 const BASE_DIR = __dirname;
 let PORT = parseInt(process.env.PORT || '3005', 10);
@@ -24,13 +25,59 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  let reqUrl = decodeURIComponent(req.url.split('?')[0]);
-  if (reqUrl === '/') reqUrl = '/index.html';
+  const parsedUrl = url.parse(req.url, true);
+  let pathname = decodeURIComponent(parsedUrl.pathname);
 
-  let filePath = path.join(BASE_DIR, reqUrl);
+  // 1. Route API requests
+  if (pathname === '/api/jobs' || pathname === '/api/jobs.js') {
+    let bodyData = '';
+    req.on('data', chunk => {
+      bodyData += chunk;
+    });
+    req.on('end', () => {
+      req.query = parsedUrl.query || {};
+      if (bodyData) {
+        try {
+          req.body = JSON.parse(bodyData);
+        } catch (e) {
+          req.body = bodyData;
+        }
+      } else {
+        req.body = {};
+      }
+
+      // Add express-like helper methods
+      res.status = function(code) {
+        this.statusCode = code;
+        return this;
+      };
+      res.json = function(data) {
+        this.setHeader('Content-Type', 'application/json; charset=utf-8');
+        this.end(JSON.stringify(data));
+      };
+
+      try {
+        const jobsHandler = require('./api/jobs.js');
+        return jobsHandler(req, res);
+      } catch (apiErr) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: apiErr.message }));
+      }
+    });
+    return;
+  }
+
+  // 2. Route Admin shorthand
+  if (pathname === '/admin' || pathname === '/admin/' || pathname === '/admin/index.html') {
+    pathname = '/admin.html';
+  } else if (pathname === '/') {
+    pathname = '/index.html';
+  }
+
+  let filePath = path.join(BASE_DIR, pathname);
   let ext = path.extname(filePath).toLowerCase();
 
-  // If PHP file requested, execute with local PHP if available
+  // 3. If PHP file requested, execute with local PHP if available
   if (ext === '.php') {
     const { execFile } = require('child_process');
     const phpPath = 'C:\\\\xampp\\\\php\\\\php.exe';
@@ -40,7 +87,7 @@ const server = http.createServer((req, res) => {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end('PHP error: ' + phpErr.message);
         }
-        res.writeHead(200, { 'Content-Type': reqUrl.includes('api/') ? 'application/json' : 'text/html' });
+        res.writeHead(200, { 'Content-Type': pathname.includes('api/') ? 'application/json' : 'text/html' });
         res.end(stdout);
       });
       return;
@@ -75,6 +122,7 @@ const server = http.createServer((req, res) => {
 function startServer(port) {
   server.listen(port, () => {
     console.log(`CEGS Website is live and running at: http://localhost:${port}`);
+    console.log(`CEGS Admin Portal is live at: http://localhost:${port}/admin`);
   });
 
   server.on('error', (err) => {

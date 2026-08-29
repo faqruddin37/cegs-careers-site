@@ -2,3 +2,7 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+uploads/resumes/*.pdf
+!uploads/resumes/.htaccess
+!uploads/resumes/index.html
+

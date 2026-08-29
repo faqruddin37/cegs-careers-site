@@ -1332,59 +1332,70 @@ window.openJobDetailsModal = function(jobId) {
 // Job Apply Modal
 window.openJobApplyModal = function(jobId) {
   const job = CEGS_DATA.liveJobs.find(j => String(j.id) === String(jobId));
-  const title = job ? `${job.title} (${job.company})` : "General Candidate Application";
+  const title = job ? `${job.title || job.job_role || 'Position'} (${job.company || job.company_name || 'Client'})` : "General Candidate Application";
 
   const content = `
     <div style="margin-bottom: 1.5rem;">
       <span class="badge badge-orange" style="margin-bottom: 0.5rem;">Direct Recruiter Review</span>
       <h2 style="font-size: 1.5rem; color: #0f1c2d;">Apply for: ${title}</h2>
-      <p style="font-size: 0.875rem; color: #64748b;">Fill in your details below. Our recruitment specialist will get back within 24 hours.</p>
+      <p style="font-size: 0.875rem; color: #64748b;">Fill in your details below. Our recruitment specialist will review your profile and respond within 24 hours.</p>
     </div>
 
-    <form id="jobApplicationForm" onsubmit="handleJobApplicationSubmit(event)">
+    <form id="jobApplicationForm" onsubmit="handleJobApplicationSubmit(event)" enctype="multipart/form-data">
+      <input type="hidden" name="job_id" value="${job ? (job.id || '') : ''}" />
+      <input type="hidden" name="job_title" value="${title}" />
+
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div>
           <label class="form-label">Full Name *</label>
-          <input type="text" class="form-control" placeholder="e.g. Rahul Sharma" required />
+          <input type="text" name="full_name" class="form-control" placeholder="e.g. Rahul Sharma" required />
         </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div>
             <label class="form-label">Email Address *</label>
-            <input type="email" class="form-control" placeholder="rahul@example.com" required />
+            <input type="email" name="email" class="form-control" placeholder="rahul@example.com" required />
           </div>
           <div>
             <label class="form-label">Phone Number *</label>
-            <input type="tel" class="form-control" placeholder="+91 98765 43210" required />
+            <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required />
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div>
             <label class="form-label">Total Experience *</label>
-            <input type="text" class="form-control" placeholder="e.g. 4.5 Years" required />
+            <input type="text" name="experience" class="form-control" placeholder="e.g. 4.5 Years" required />
           </div>
           <div>
-            <label class="form-label">Current / Expected CTC *</label>
-            <input type="text" class="form-control" placeholder="e.g. 14 LPA / 18 LPA" required />
+            <label class="form-label">Current / Expected CTC</label>
+            <input type="text" name="expected_ctc" class="form-control" placeholder="e.g. 14 LPA / 18 LPA" />
           </div>
         </div>
 
-        <div>
-          <label class="form-label">LinkedIn Profile URL</label>
-          <input type="url" class="form-control" placeholder="https://linkedin.com/in/username" />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label class="form-label">Current Location</label>
+            <input type="text" name="location" class="form-control" placeholder="e.g. Bengaluru, Karnataka" />
+          </div>
+          <div>
+            <label class="form-label">LinkedIn Profile URL</label>
+            <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/username" />
+          </div>
         </div>
 
         <div>
           <label class="form-label">Upload Resume / CV (PDF or DOCX)</label>
           <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 1.5rem; text-align: center; background: #f8fafc; cursor: pointer;" onclick="document.getElementById('resumeFileInput').click()">
-            <input type="file" id="resumeFileInput" style="display: none;" accept=".pdf,.doc,.docx" onchange="updateFileNameDisplay(this)" />
+            <input type="file" id="resumeFileInput" name="resume" style="display: none;" accept=".pdf,.doc,.docx" onchange="updateFileNameDisplay(this)" />
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0d5e72" stroke-width="1.5" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            <p id="resumeFileLabel" style="font-size: 0.85rem; font-weight: 600; color: #0d5e72;">Click or drag resume file here (Max 5MB)</p>
+            <p id="resumeFileLabel" style="font-size: 0.85rem; font-weight: 600; color: #0d5e72;">Click or drag resume file here (PDF/DOCX, Max 5MB)</p>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;">Submit Job Application</button>
+        <div id="jobAppErrorMsg" style="display: none; padding: 0.75rem 1rem; border-radius: 8px; background: #fef2f2; color: #991b1b; font-size: 0.85rem; font-weight: 600;"></div>
+
+        <button type="submit" id="jobAppSubmitBtn" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;">Submit Job Application</button>
       </div>
     </form>
   `;
@@ -1399,15 +1410,89 @@ window.openGeneralApplyModal = function() {
 window.updateFileNameDisplay = function(input) {
   const label = document.getElementById('resumeFileLabel');
   if (input.files && input.files[0]) {
-    label.innerText = `Selected: ${input.files[0].name}`;
-    label.style.color = '#0bb379';
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      label.innerText = `Error: File exceeds 5MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`;
+      label.style.color = '#ef4444';
+      input.value = '';
+    } else {
+      label.innerText = `Selected: ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+      label.style.color = '#0bb379';
+    }
   }
 };
 
 window.handleJobApplicationSubmit = function(e) {
   e.preventDefault();
-  closeModal();
-  showToast("Application submitted successfully! Our talent team will reach out within 24h.");
+  const form = e.target;
+  const submitBtn = document.getElementById('jobAppSubmitBtn');
+  const errorDiv = document.getElementById('jobAppErrorMsg');
+
+  if (errorDiv) errorDiv.style.display = 'none';
+
+  // Client validation on resume
+  const fileInput = document.getElementById('resumeFileInput');
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    const file = fileInput.files[0];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['pdf', 'doc', 'docx'].includes(ext)) {
+      if (errorDiv) {
+        errorDiv.innerText = 'Invalid file format. Only PDF, DOC, and DOCX files are allowed.';
+        errorDiv.style.display = 'block';
+      }
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      if (errorDiv) {
+        errorDiv.innerText = 'Resume file exceeds the 5MB size limit.';
+        errorDiv.style.display = 'block';
+      }
+      return;
+    }
+  }
+
+  const formData = new FormData(form);
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite; display: inline-block; margin-right: 0.5rem;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+      Submitting Application...
+    `;
+  }
+
+  const tryPostCandidate = (url) => {
+    return fetch(url, {
+      method: 'POST',
+      body: formData
+    }).then(async (res) => {
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || data.status !== 'success') {
+        throw new Error((data && data.message) ? data.message : `Server error (${res.status})`);
+      }
+      return data;
+    });
+  };
+
+  tryPostCandidate('/api/candidates.php')
+    .catch(() => tryPostCandidate('api/candidates.php'))
+    .catch(() => tryPostCandidate('backend/api/candidates.php'))
+    .then((data) => {
+      closeModal();
+      showToast(data.message || "Application submitted successfully! Our recruitment team will contact you within 24h.");
+    })
+    .catch((err) => {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Job Application";
+      }
+      if (errorDiv) {
+        errorDiv.innerText = err.message || 'Failed to submit application. Please try again.';
+        errorDiv.style.display = 'block';
+      } else {
+        showToast(err.message || 'Submission failed. Please try again.', 'error');
+      }
+    });
 };
 
 // 4. Interactive Hiring & Turnaround Calculator
@@ -2062,49 +2147,122 @@ window.reqRemoveFile = function(e) {
   if (preview) preview.classList.remove('has-file');
 };
 
+// Helper for posting client enquiries to backend API
+function postClientEnquiry(payload) {
+  const tryPost = (url) => {
+    const isFormData = payload instanceof FormData;
+    const options = {
+      method: 'POST',
+      body: isFormData ? payload : JSON.stringify(payload)
+    };
+    if (!isFormData) {
+      options.headers = { 'Content-Type': 'application/json' };
+    }
+    return fetch(url, options).then(async (res) => {
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || data.status !== 'success') {
+        throw new Error((data && data.message) ? data.message : `Server error (${res.status})`);
+      }
+      return data;
+    });
+  };
+
+  return tryPost('/api/enquiries.php')
+    .catch(() => tryPost('api/enquiries.php'))
+    .catch(() => tryPost('backend/api/enquiries.php'));
+}
+
+window.handlePartnershipSubmit = function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalBtnHtml = submitBtn ? submitBtn.innerHTML : 'Submit Partnership Enquiry';
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite; display: inline-block; margin-right: 0.5rem;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+      Submitting Enquiry...
+    `;
+  }
+
+  const formData = new FormData(form);
+
+  postClientEnquiry(formData)
+    .then((data) => {
+      form.reset();
+      showToast(data.message || "Partnership enquiry submitted successfully! Our enterprise team will connect within 2 hours.");
+    })
+    .catch((err) => {
+      showToast(err.message || "Failed to submit enquiry. Please check your information and try again.", "error");
+    })
+    .finally(() => {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+    });
+};
+
 window.reqSubmitForm = function(e) {
   if (e) e.preventDefault();
   if (!reqValidateCurrentStep(4)) return;
 
-  // Render Success Screen inside Modal
-  const modalContainer = document.querySelector('.modal-container');
-  const modalBody = document.getElementById('modalBody');
-  if (!modalBody) return;
+  const nextBtn = document.getElementById('reqNextBtn');
+  if (nextBtn) {
+    nextBtn.disabled = true;
+    nextBtn.innerText = "Submitting Requirement...";
+  }
 
-  modalBody.innerHTML = `
-    <div class="req-success-screen">
-      <div class="req-success-icon-wrap">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <h3>Requirement Submitted Successfully!</h3>
-      <p>Thank you for sharing your hiring requirement. Our recruitment team will review your needs and contact you shortly.</p>
+  // Submit client requirement data to API
+  postClientEnquiry(window.clientReqData)
+    .then(() => {
+      // Render Success Screen inside Modal
+      const modalBody = document.getElementById('modalBody');
+      if (!modalBody) return;
 
-      <div class="req-summary-card">
-        <div class="req-summary-item">
-          <small>Company</small>
-          <strong>${window.clientReqData.companyName || 'Enterprise Client'}</strong>
-        </div>
-        <div class="req-summary-item">
-          <small>Position / Role</small>
-          <strong>${window.clientReqData.jobTitle || 'Role Vacancy'}</strong>
-        </div>
-        <div class="req-summary-item">
-          <small>Openings</small>
-          <strong>${window.clientReqData.numberOfOpenings} Vacancies</strong>
-        </div>
-        <div class="req-summary-item">
-          <small>Hiring Timeline</small>
-          <strong>${window.clientReqData.hiringTimeline}</strong>
-        </div>
-      </div>
+      modalBody.innerHTML = `
+        <div class="req-success-screen">
+          <div class="req-success-icon-wrap">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h3>Requirement Submitted Successfully!</h3>
+          <p>Thank you for sharing your hiring requirement. Our recruitment team will review your needs and contact you shortly.</p>
 
-      <button type="button" class="btn btn-primary" style="padding: 0.85rem 2.5rem; font-weight: 700;" onclick="closeModal()">
-        Done
-      </button>
-    </div>
-  `;
+          <div class="req-summary-card">
+            <div class="req-summary-item">
+              <small>Company</small>
+              <strong>${window.clientReqData.companyName || 'Enterprise Client'}</strong>
+            </div>
+            <div class="req-summary-item">
+              <small>Position / Role</small>
+              <strong>${window.clientReqData.jobTitle || 'Role Vacancy'}</strong>
+            </div>
+            <div class="req-summary-item">
+              <small>Openings</small>
+              <strong>${window.clientReqData.numberOfOpenings} Vacancies</strong>
+            </div>
+            <div class="req-summary-item">
+              <small>Hiring Timeline</small>
+              <strong>${window.clientReqData.hiringTimeline}</strong>
+            </div>
+          </div>
 
-  showToast("Hiring requirement received! Our senior recruiter will reach out shortly.");
+          <button type="button" class="btn btn-primary" style="padding: 0.85rem 2.5rem; font-weight: 700;" onclick="closeModal()">
+            Done
+          </button>
+        </div>
+      `;
+
+      showToast("Hiring requirement received! Our senior recruiter will reach out shortly.");
+    })
+    .catch((err) => {
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Submit Hiring Requirement";
+      }
+      showToast(err.message || "Failed to submit requirement. Please try again.", "error");
+    });
 };
 
 // 6. Employer Talent Request Form Submission

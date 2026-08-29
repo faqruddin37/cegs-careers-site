@@ -1,4 +1,4 @@
-﻿-- ============================================================================
+-- ============================================================================
 -- CEGS Recruitment Portal - Database Setup Script
 -- Compatible with MySQL 5.7+ / MySQL 8.0+ / MariaDB
 -- ============================================================================
@@ -50,3 +50,58 @@ INSERT INTO `jobs` (`company_name`, `job_role`, `salary`, `qualification`, `lang
 ('CloudScale International', 'International Inside Sales Specialist', '₹6,50,000 - ₹11,00,000 LPA + Incentives', 'Any Graduate / Postgraduate', 'Fluent English (Mandatory)', 'US Shift (6:30 PM - 3:30 AM)', 'Bengaluru (Electronic City)', 'Two-way Free Cab', 'Prior B2B cold calling or SDR outbound experience in US/UK markets is mandatory. Uncapped monthly performance commissions.', NOW()),
 ('Apex FinServe Partners', 'Payroll & Compliance Executive', '₹5,50,000 - ₹8,50,000 LPA', 'B.Com / M.Com / MBA Finance', 'English, Kannada, Hindi', 'General Day Shift (9:00 AM - 6:00 PM)', 'Bengaluru (Indiranagar)', 'No', 'Deep knowledge of Indian labor laws, PF, ESIC, Form 16, and quarterly TDS filings. Experience in payroll ERP is a plus.', NOW()),
 ('Zenith Customer Support BPO', 'Technical Customer Support Specialist', '₹3,80,000 - ₹5,20,000 LPA', 'Any Graduate (10+2+3)', 'English & Hindi (Fluent)', 'Rotational 24/7 Shifts', 'Bengaluru (Whitefield)', 'Yes (Night Pick & Drop)', '5 days working with 2 consecutive rotational week-offs. 1-month paid enterprise training included.', NOW());
+
+-- ----------------------------------------------------------------------------
+-- 5. Candidate Applications Table
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `candidate_applications` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `full_name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(100) NOT NULL,
+  `job_id` INT DEFAULT NULL,
+  `job_title` VARCHAR(255) DEFAULT NULL,
+  `experience` VARCHAR(100) DEFAULT NULL,
+  `current_ctc` VARCHAR(100) DEFAULT NULL,
+  `expected_ctc` VARCHAR(100) DEFAULT NULL,
+  `linkedin_url` VARCHAR(255) DEFAULT NULL,
+  `location` VARCHAR(255) DEFAULT NULL,
+  `skills` TEXT DEFAULT NULL,
+  `cover_message` TEXT DEFAULT NULL,
+  `resume_filename` VARCHAR(255) DEFAULT NULL,
+  `resume_path` VARCHAR(255) DEFAULT NULL,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'New',
+  `recruiter_notes` TEXT DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_cand_status` (`status`),
+  INDEX `idx_cand_job_id` (`job_id`),
+  INDEX `idx_cand_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 6. Client Enquiries Table
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `client_enquiries` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `company_name` VARCHAR(255) NOT NULL,
+  `contact_person` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(100) NOT NULL,
+  `company_website` VARCHAR(255) DEFAULT NULL,
+  `business_location` VARCHAR(255) DEFAULT NULL,
+  `partnership_type` VARCHAR(255) DEFAULT NULL,
+  `geographic_coverage` VARCHAR(255) DEFAULT NULL,
+  `industries_roles` TEXT DEFAULT NULL,
+  `company_introduction` TEXT DEFAULT NULL,
+  `existing_network` TEXT DEFAULT NULL,
+  `partnership_requirement` TEXT DEFAULT NULL,
+  `additional_message` TEXT DEFAULT NULL,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'New',
+  `recruiter_notes` TEXT DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_enq_status` (`status`),
+  INDEX `idx_enq_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

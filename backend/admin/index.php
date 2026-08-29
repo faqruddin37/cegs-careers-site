@@ -11,11 +11,32 @@ requireAdminAuth();
 $pdo = getDBConnection();
 $jobs = [];
 $totalJobs = 0;
+$totalCandidates = 0;
+$newCandidates = 0;
+$totalEnquiries = 0;
+$newEnquiries = 0;
+
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $msg = isset($_GET['msg']) ? trim($_GET['msg']) : '';
 
 if ($pdo) {
     try {
+        // Fetch candidates and enquiries stats safely
+        try {
+            $totalCandidates = (int)$pdo->query("SELECT COUNT(*) FROM candidate_applications")->fetchColumn();
+            $newCandidates = (int)$pdo->query("SELECT COUNT(*) FROM candidate_applications WHERE status = 'New'")->fetchColumn();
+        } catch (PDOException $e) {
+            // Table might not exist yet if migration not run
+        }
+
+        try {
+            $totalEnquiries = (int)$pdo->query("SELECT COUNT(*) FROM client_enquiries")->fetchColumn();
+            $newEnquiries = (int)$pdo->query("SELECT COUNT(*) FROM client_enquiries WHERE status = 'New'")->fetchColumn();
+        } catch (PDOException $e) {
+            // Table might not exist yet if migration not run
+        }
+
+        // Fetch jobs
         if (!empty($search)) {
             $stmt = $pdo->prepare("SELECT * FROM jobs WHERE company_name LIKE :s OR job_role LIKE :s OR location LIKE :s OR qualification LIKE :s ORDER BY posted_date DESC");
             $stmt->execute([':s' => "%{$search}%"]);
@@ -49,7 +70,7 @@ if ($pdo) {
       </div>
       <div>
         <span class="admin-brand-title">CEGS Admin</span>
-        <span class="admin-brand-badge">Jobs Manager</span>
+        <span class="admin-brand-badge">Dashboard</span>
       </div>
     </a>
 
@@ -71,6 +92,28 @@ if ($pdo) {
 
   <!-- Main Container -->
   <main class="admin-container">
+
+    <!-- Primary Sub-Navigation Bar -->
+    <nav class="admin-subnav">
+      <a href="index.php" class="admin-subnav-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <span>Jobs Management</span>
+      </a>
+      <a href="candidates.php" class="admin-subnav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span>Candidate Applications</span>
+        <?php if ($newCandidates > 0): ?>
+          <span style="background:#0d5e72;color:#fff;border-radius:999px;font-size:0.7rem;padding:0.1rem 0.5rem;"><?php echo $newCandidates; ?></span>
+        <?php endif; ?>
+      </a>
+      <a href="enquiries.php" class="admin-subnav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Client Enquiries</span>
+        <?php if ($newEnquiries > 0): ?>
+          <span style="background:#0d5e72;color:#fff;border-radius:999px;font-size:0.7rem;padding:0.1rem 0.5rem;"><?php echo $newEnquiries; ?></span>
+        <?php endif; ?>
+      </a>
+    </nav>
 
     <!-- Page Header & Action -->
     <div class="admin-page-header">
@@ -106,7 +149,7 @@ if ($pdo) {
     <div class="admin-stats-grid">
       <div class="stat-card">
         <div class="stat-info">
-          <h4>Total Active Postings</h4>
+          <h4>Active Job Openings</h4>
           <div class="stat-number"><?php echo $totalJobs; ?></div>
         </div>
         <div class="stat-icon teal">
@@ -116,23 +159,43 @@ if ($pdo) {
 
       <div class="stat-card">
         <div class="stat-info">
-          <h4>Database Status</h4>
+          <h4>Candidate Applications</h4>
+          <div class="stat-number" style="color: #0d5e72;">
+            <?php echo $totalCandidates; ?>
+            <?php if ($newCandidates > 0): ?>
+              <span style="font-size: 0.85rem; font-weight: 700; color: #f56a00;">(<?php echo $newCandidates; ?> New)</span>
+            <?php endif; ?>
+          </div>
+        </div>
+        <div class="stat-icon teal">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>Client Enquiries</h4>
+          <div class="stat-number" style="color: #0d5e72;">
+            <?php echo $totalEnquiries; ?>
+            <?php if ($newEnquiries > 0): ?>
+              <span style="font-size: 0.85rem; font-weight: 700; color: #f56a00;">(<?php echo $newEnquiries; ?> New)</span>
+            <?php endif; ?>
+          </div>
+        </div>
+        <div class="stat-icon orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>Database Connection</h4>
           <div style="font-size: 1.15rem; font-weight: 800; color: #0bb379; margin-top: 0.25rem;">
             <?php echo $pdo ? 'Connected (MySQL)' : 'Disconnected'; ?>
           </div>
         </div>
         <div class="stat-icon green">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <h4>API Sync Feed</h4>
-          <div style="font-size: 1.15rem; font-weight: 800; color: #0d5e72; margin-top: 0.25rem;">Active REST Endpoint</div>
-        </div>
-        <div class="stat-icon orange">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         </div>
       </div>
     </div>

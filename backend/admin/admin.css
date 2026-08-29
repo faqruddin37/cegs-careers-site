@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    CEGS Admin Portal - Custom Stylesheet
    Matches 100% with CEGS Brand Theme, Palette & Fonts
    ========================================================================== */
@@ -316,7 +316,126 @@ body {
 .badge-teal { background: rgba(13, 94, 114, 0.1); color: var(--color-primary); }
 .badge-green { background: rgba(11, 179, 121, 0.1); color: var(--color-green); }
 .badge-orange { background: rgba(245, 106, 0, 0.1); color: var(--color-orange); }
+.badge-blue { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+.badge-red { background: rgba(239, 68, 68, 0.1); color: var(--color-red); }
+.badge-purple { background: rgba(147, 51, 234, 0.1); color: #9333ea; }
 .badge-gray { background: #f1f5f9; color: #475569; }
+
+/* Admin Main Sub-Navigation Bar */
+.admin-subnav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  overflow-x: auto;
+}
+
+.admin-subnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.admin-subnav-link:hover {
+  color: var(--color-primary);
+  background: rgba(13, 94, 114, 0.05);
+}
+
+.admin-subnav-link.active {
+  color: var(--color-primary);
+  background: rgba(13, 94, 114, 0.1);
+}
+
+.admin-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  background: #f8fafc;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.admin-filter-pill:hover,
+.admin-filter-pill.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+/* Detail Views Grid */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-section-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detail-field-group {
+  margin-bottom: 1.25rem;
+}
+
+.detail-field-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.detail-field-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  line-height: 1.5;
+}
+
+.detail-box-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
 
 /* Buttons */
 .btn {

@@ -30,8 +30,11 @@ try {
     $params = [];
 
     if (!empty($search)) {
-        $query .= " AND (job_role LIKE :search OR company_name LIKE :search OR qualification LIKE :search OR additional_notes LIKE :search)";
-        $params[':search'] = "%{$search}%";
+        $query .= " AND (job_role LIKE :s1 OR company_name LIKE :s2 OR qualification LIKE :s3 OR additional_notes LIKE :s4)";
+        $params[':s1'] = "%{$search}%";
+        $params[':s2'] = "%{$search}%";
+        $params[':s3'] = "%{$search}%";
+        $params[':s4'] = "%{$search}%";
     }
 
     if (!empty($location)) {
