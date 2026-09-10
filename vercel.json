@@ -1,6 +1,13 @@
 {
   "version": 2,
-  "outputDirectory": "public",
+  "functions": {
+    "index.js": {
+      "includeFiles": "{css/**,js/**,images/**,source/**,uploads/**,public/**,dist/**,*.html}"
+    },
+    "api/*.js": {
+      "includeFiles": "{backend/**,uploads/**,data/**,*.sql}"
+    }
+  },
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/", "destination": "/admin.html" }
