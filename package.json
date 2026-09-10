@@ -1,0 +1,10 @@
+{
+  "name": "cegs-careers-site",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node local-dev-server.js",
+    "start": "node local-dev-server.js"
+  }
+}

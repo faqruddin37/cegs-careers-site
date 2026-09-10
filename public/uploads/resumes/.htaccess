@@ -1,0 +1,8 @@
+# Prevent script execution and direct access to dangerous file types
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phps|exe|sh|pl|cgi|py|js|bat|cmd)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Disable Directory Browsing
+Options -Indexes

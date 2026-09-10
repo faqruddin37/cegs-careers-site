@@ -5,4 +5,5 @@ Thumbs.db
 uploads/resumes/*.pdf
 !uploads/resumes/.htaccess
 !uploads/resumes/index.html
-
+.vercel/
+dist/
