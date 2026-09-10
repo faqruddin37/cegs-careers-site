@@ -61,80 +61,143 @@
           <li class="nav-item"><a href="#home" class="nav-link active">Home</a></li>
           <li class="nav-item"><a href="#about" class="nav-link">About Us</a></li>
           
-          <!-- Services Dropdown -->
-          <li class="nav-item">
-            <a href="#services" class="nav-link">
-              Services
+          <!-- Services Mega Menu Dropdown -->
+          <li class="nav-item mega-nav-item" id="servicesNavItem">
+            <button type="button" class="nav-link services-nav-btn" id="servicesNavBtn" aria-expanded="false" aria-controls="servicesMegaMenu">
+              <span>Services</span>
               <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="dropdown-item">
-                <a href="#service-hr-consulting">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+
+            <!-- 2 Columns x 3 Rows Interactive Mega Menu -->
+            <div class="services-mega-menu" id="servicesMegaMenu" role="region" aria-label="CEGS Services Menu">
+              <!-- Mega Menu Top Bar -->
+              <div class="mega-menu-header">
+                <div class="mega-header-left">
+                  <span class="mega-pill-badge">✨ OUR PRACTICE AREAS</span>
+                  <h4 class="mega-header-title">Enterprise Services & Global Staffing</h4>
+                </div>
+                <div class="mega-header-right">
+                  <a href="#services" class="mega-view-all-link" onclick="closeServicesMenu()">View All Services →</a>
+                </div>
+              </div>
+
+              <!-- 2 Columns x 3 Rows Grid (6 Services Total) -->
+              <div class="mega-menu-grid">
+                <!-- Service 1 (Col 1, Row 1): HR Consulting -->
+                <a href="#service-hr-consulting" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon hr-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                   </div>
-                  <div>
-                    HR Consulting
-                    <small>Policy, C&B and Org structuring</small>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">HR Consulting</span>
+                      <span class="mega-card-tag">Policy & C&B</span>
+                    </div>
+                    <p class="mega-card-desc">Strategic org structuring, HR policy frameworks, and complete statutory audits.</p>
                   </div>
-                </a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#service-staffing">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
-                  </div>
-                  <div>
-                    Staffing Solutions
-                    <small>Permanent, Contract & Leadership</small>
-                  </div>
-                </a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#service-payroll">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
-                  </div>
-                  <div>
-                    Payroll Management
-                    <small>PF, ESIC, Tax & 100% compliance</small>
-                  </div>
-                </a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#service-it-services">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                  </div>
-                  <div>
-                    IT Services
-                    <small>Web, Apps, AI/ML, UI/UX & SEO</small>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
                 </a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#service-bpo">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+
+                <!-- Service 2 (Col 2, Row 1): Staffing Solutions -->
+                <a href="#service-staffing" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon staffing-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
                   </div>
-                  <div>
-                    BPO / KPO & Inside Sales
-                    <small>SDR Outbound & 24/7 Support</small>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">Staffing Solutions</span>
+                      <span class="mega-card-tag">Permanent & Contract</span>
+                    </div>
+                    <p class="mega-card-desc">Executive CXO search, niche lateral talent, and rapid 48-hour volume recruitment.</p>
                   </div>
-                </a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#service-training">
-                  <div class="dropdown-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                  </div>
-                  <div>
-                    Training Courses
-                    <small>Corporate Upskilling & Bootcamps</small>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
                 </a>
-              </li>
-            </ul>
+
+                <!-- Service 3 (Col 1, Row 2): Payroll Management -->
+                <a href="#service-payroll" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon payroll-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+                  </div>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">Payroll Management</span>
+                      <span class="mega-card-tag">100% Compliance</span>
+                    </div>
+                    <p class="mega-card-desc">Zero-error monthly payroll execution, PF/ESIC statutory compliance, and tax filings.</p>
+                  </div>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
+                </a>
+
+                <!-- Service 4 (Col 2, Row 2): IT Services -->
+                <a href="#service-it-services" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon it-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                  </div>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">IT Services & Tech</span>
+                      <span class="mega-card-tag">Web, AI/ML & Cloud</span>
+                    </div>
+                    <p class="mega-card-desc">Custom software engineering, AI/ML web platforms, and pre-vetted top 5% tech talent.</p>
+                  </div>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
+                </a>
+
+                <!-- Service 5 (Col 1, Row 3): BPO / KPO & Inside Sales -->
+                <a href="#service-bpo" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon bpo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+                  </div>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">BPO / KPO & Inside Sales</span>
+                      <span class="mega-card-tag">24/7 Global Ops</span>
+                    </div>
+                    <p class="mega-card-desc">Outbound SDR sales pipelines, multichannel customer care, and backend support.</p>
+                  </div>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
+                </a>
+
+                <!-- Service 6 (Col 2, Row 3): Training Courses -->
+                <a href="#service-training" class="mega-service-card" onclick="closeServicesMenu()">
+                  <div class="mega-card-icon training-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                  </div>
+                  <div class="mega-card-content">
+                    <div class="mega-card-head">
+                      <span class="mega-card-title">Training & Upskilling</span>
+                      <span class="mega-card-tag">Bootcamps & Placements</span>
+                    </div>
+                    <p class="mega-card-desc">Corporate upskilling bootcamps, job-ready certifications, and 100% placement support.</p>
+                  </div>
+                  <div class="mega-card-arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Mega Menu Bottom Bar -->
+              <div class="mega-menu-footer">
+                <div class="mega-footer-info">
+                  <span class="mega-footer-dot"></span>
+                  <span>Need custom enterprise consulting or team building?</span>
+                </div>
+                <button type="button" class="btn btn-primary mega-footer-btn" onclick="closeServicesMenu(); if(typeof openCandidateModal === 'function') openCandidateModal();">
+                  <span>Speak to Specialist</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+              </div>
+            </div>
           </li>
 
           <li class="nav-item"><a href="#careers" class="nav-link">Careers & Jobs</a></li>

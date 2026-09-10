@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
+  initServicesMegaMenu();
   initRouter();
   initStickyHeader();
   renderDynamicServices();
@@ -14,6 +15,59 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHomeBlogPreview();
   initBlogFilters();
 });
+
+// Interactive Services Mega-Menu Controller (Click to Toggle 2x3 Grid)
+function initServicesMegaMenu() {
+  const btn = document.getElementById('servicesNavBtn');
+  const menu = document.getElementById('servicesMegaMenu');
+  const navItem = document.getElementById('servicesNavItem');
+
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isActive = menu.classList.contains('active');
+    if (isActive) {
+      closeServicesMenu();
+    } else {
+      openServicesMenu();
+    }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (navItem && !navItem.contains(e.target)) {
+      closeServicesMenu();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      closeServicesMenu();
+    }
+  });
+}
+
+function openServicesMenu() {
+  const btn = document.getElementById('servicesNavBtn');
+  const menu = document.getElementById('servicesMegaMenu');
+  if (!btn || !menu) return;
+
+  btn.classList.add('active');
+  btn.setAttribute('aria-expanded', 'true');
+  menu.classList.add('active');
+}
+
+function closeServicesMenu() {
+  const btn = document.getElementById('servicesNavBtn');
+  const menu = document.getElementById('servicesMegaMenu');
+  if (!btn || !menu) return;
+
+  btn.classList.remove('active');
+  btn.setAttribute('aria-expanded', 'false');
+  menu.classList.remove('active');
+}
 
 // Navigation & Mobile Drawer
 function initNavigation() {
