@@ -6,7 +6,8 @@
 const CEGS_DATA = {
   company: {
     name: "CEGS",
-    tagline: "The Right Opportunity is Waiting for You",
+    fullName: "Career Expert Global Solution",
+    tagline: "Build • Grow • Excel",
     subtagline: "Connecting ambitious professionals to their dream careers and empowering enterprises with world-class talent, compliant payroll, web development, and certified training.",
     experienceYears: "10+",
     stats: [

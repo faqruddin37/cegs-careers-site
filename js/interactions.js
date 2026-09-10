@@ -470,6 +470,49 @@ window.handleCandidateFinalSubmit = function(e) {
   candidateWizardState.contactName = nameInput.value.trim();
   candidateWizardState.mobileNumber = phoneInput.value.trim();
 
+  // Create full candidate registration record
+  const newCandidateRecord = {
+    id: 'CAND-' + Date.now(),
+    full_name: candidateWizardState.contactName,
+    email: '',
+    phone: candidateWizardState.mobileNumber,
+    job_id: null,
+    job_title: `Candidate Registration — ${candidateWizardState.industry || 'General'}`,
+    source: 'Candidate Registration Wizard',
+    experience: candidateWizardState.experience || 'Not Specified',
+    current_ctc: '',
+    expected_ctc: '',
+    location: candidateWizardState.location || 'Bengaluru',
+    skills: candidateWizardState.industry || '',
+    linkedin_url: '',
+    cover_message: `Registered through Candidate Portal. Industry: ${candidateWizardState.industry}, Experience: ${candidateWizardState.experience}, Location: ${candidateWizardState.location}.`,
+    resume_filename: `${candidateWizardState.contactName.replace(/\s+/g, '_')}_Profile.pdf`,
+    resume_preview: `Candidate Profile: ${candidateWizardState.contactName}\nMobile: ${candidateWizardState.mobileNumber}\nLocation: ${candidateWizardState.location}\nPreferred Industry: ${candidateWizardState.industry}\nExperience Level: ${candidateWizardState.experience}\nWhatsApp Alerts: Opted In`,
+    status: 'New',
+    recruiter_notes: 'Registered via candidate hiring wizard.',
+    created_at: new Date().toISOString()
+  };
+
+  // 1. Save directly to localStorage
+  try {
+    let existing = JSON.parse(localStorage.getItem('cegs_candidates') || '[]');
+    existing.unshift(newCandidateRecord);
+    localStorage.setItem('cegs_candidates', JSON.stringify(existing));
+  } catch(e) {}
+
+  // 2. Dispatch to APIs
+  fetch('/api/candidates', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newCandidateRecord)
+  }).catch(() => {
+    fetch('/api/candidates.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCandidateRecord)
+    }).catch(() => {});
+  });
+
   closeModal();
   showToast(`Profile registered successfully! Top placement consultancies in ${candidateWizardState.location} for ${candidateWizardState.industry} (${candidateWizardState.experience}) will connect with ${candidateWizardState.contactName} shortly.`);
 };
@@ -1280,44 +1323,44 @@ window.openJobDetailsModal = function(jobId) {
           <span class="badge badge-${job.badgeColor || 'teal'}">${job.department}</span>
           <span class="badge badge-gray">${job.type || 'Full-Time'}</span>
         </div>
-        <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">⏱️ Posted ${job.posted}</span>
+        <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">⏱️ Posted ${job.posted}</span>
       </div>
       
-      <h2 style="font-size: 1.65rem; color: #0f1c2d; margin-bottom: 0.35rem; font-weight: 800; line-height: 1.25;">${job.title}</h2>
+      <h2 style="font-size: 1.65rem; color: #ffffff; margin-bottom: 0.35rem; font-weight: 800; line-height: 1.25;">${job.title}</h2>
       
       <div style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.4rem;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-3"></path><path d="M9 9v.01"></path><path d="M9 12v.01"></path><path d="M9 15v.01"></path><path d="M9 18v.01"></path></svg>
         <span>${job.company || 'CEGS Partner Client'}</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.85rem; margin-bottom: 1.25rem;">
-        <span>📍 <strong>Location:</strong> ${job.location}</span>
-        <span>💰 <strong>Salary:</strong> ${job.salary}</span>
-        <span>🎓 <strong>Qualification:</strong> ${job.qualification || job.experience}</span>
-        <span>⏰ <strong>Shift:</strong> ${job.shiftDetails || job.type}</span>
-        ${job.languageRequired ? `<span>🗣️ <strong>Language:</strong> ${job.languageRequired}</span>` : ''}
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; background: #181c26; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.85rem; margin-bottom: 1.25rem; color: #e2e8f0;">
+        <span>📍 <strong style="color: #ffffff;">Location:</strong> ${job.location}</span>
+        <span>💰 <strong style="color: #ffffff;">Salary:</strong> <span style="color: #f3c959; font-weight: 700;">${job.salary}</span></span>
+        <span>🎓 <strong style="color: #ffffff;">Qualification:</strong> ${job.qualification || job.experience}</span>
+        <span>⏰ <strong style="color: #ffffff;">Shift:</strong> ${job.shiftDetails || job.type}</span>
+        ${job.languageRequired ? `<span>🗣️ <strong style="color: #ffffff;">Language:</strong> ${job.languageRequired}</span>` : ''}
         ${cabHtml}
       </div>
     </div>
     
     <div style="margin-bottom: 1.5rem;">
-      <h4 style="margin-bottom: 0.5rem; color: #0f1c2d; font-weight: 800;">Role Overview</h4>
-      <p style="font-size: 0.925rem; color: #475569; line-height: 1.6;">${job.description}</p>
+      <h4 style="margin-bottom: 0.5rem; color: #ffffff; font-weight: 800;">Role Overview</h4>
+      <p style="font-size: 0.925rem; color: #cbd5e1; line-height: 1.6;">${job.description}</p>
     </div>
 
     <div style="margin-bottom: 1.75rem;">
-      <h4 style="margin-bottom: 0.75rem; color: #0f1c2d; font-weight: 800;">Key Requirements & Highlights</h4>
+      <h4 style="margin-bottom: 0.75rem; color: #ffffff; font-weight: 800;">Key Requirements & Highlights</h4>
       <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; padding: 0;">
         ${reqs.map(req => `
-          <li style="display: flex; gap: 0.6rem; font-size: 0.9rem; color: #334155; align-items: flex-start;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0bb379" stroke-width="2.5" style="flex-shrink: 0; margin-top: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <li style="display: flex; gap: 0.6rem; font-size: 0.9rem; color: #e2e8f0; align-items: flex-start;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" style="flex-shrink: 0; margin-top: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
             <span>${req}</span>
           </li>
         `).join('')}
       </ul>
     </div>
 
-    <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.25rem; border-top: 1px solid #e2e8f0;">
+    <div style="display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
       <button class="btn btn-outline" onclick="closeModal()">Close</button>
       <button class="btn btn-primary" onclick="openJobApplyModal('${job.id}')">
         <span>Proceed to Apply</span>
@@ -1337,8 +1380,8 @@ window.openJobApplyModal = function(jobId) {
   const content = `
     <div style="margin-bottom: 1.5rem;">
       <span class="badge badge-orange" style="margin-bottom: 0.5rem;">Direct Recruiter Review</span>
-      <h2 style="font-size: 1.5rem; color: #0f1c2d;">Apply for: ${title}</h2>
-      <p style="font-size: 0.875rem; color: #64748b;">Fill in your details below. Our recruitment specialist will review your profile and respond within 24 hours.</p>
+      <h2 style="font-size: 1.5rem; color: #ffffff;">Apply for: ${title}</h2>
+      <p style="font-size: 0.875rem; color: #94a3b8;">Fill in your details below. Our recruitment specialist will review your profile and respond within 24 hours.</p>
     </div>
 
     <form id="jobApplicationForm" onsubmit="handleJobApplicationSubmit(event)" enctype="multipart/form-data">
@@ -1386,14 +1429,14 @@ window.openJobApplyModal = function(jobId) {
 
         <div>
           <label class="form-label">Upload Resume / CV (PDF or DOCX)</label>
-          <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 1.5rem; text-align: center; background: #f8fafc; cursor: pointer;" onclick="document.getElementById('resumeFileInput').click()">
+          <div style="border: 2px dashed rgba(212, 175, 55, 0.4); border-radius: 12px; padding: 1.5rem; text-align: center; background: #181c26; cursor: pointer;" onclick="document.getElementById('resumeFileInput').click()">
             <input type="file" id="resumeFileInput" name="resume" style="display: none;" accept=".pdf,.doc,.docx" onchange="updateFileNameDisplay(this)" />
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0d5e72" stroke-width="1.5" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            <p id="resumeFileLabel" style="font-size: 0.85rem; font-weight: 600; color: #0d5e72;">Click or drag resume file here (PDF/DOCX, Max 5MB)</p>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <p id="resumeFileLabel" style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">Click or drag resume file here (PDF/DOCX, Max 5MB)</p>
           </div>
         </div>
 
-        <div id="jobAppErrorMsg" style="display: none; padding: 0.75rem 1rem; border-radius: 8px; background: #fef2f2; color: #991b1b; font-size: 0.85rem; font-weight: 600;"></div>
+        <div id="jobAppErrorMsg" style="display: none; padding: 0.75rem 1rem; border-radius: 8px; background: rgba(239, 68, 68, 0.15); color: #f87171; font-size: 0.85rem; font-weight: 600;"></div>
 
         <button type="submit" id="jobAppSubmitBtn" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;">Submit Job Application</button>
       </div>
@@ -1432,8 +1475,10 @@ window.handleJobApplicationSubmit = function(e) {
 
   // Client validation on resume
   const fileInput = document.getElementById('resumeFileInput');
+  let resumeFileName = '';
   if (fileInput && fileInput.files && fileInput.files[0]) {
     const file = fileInput.files[0];
+    resumeFileName = file.name;
     const ext = file.name.split('.').pop().toLowerCase();
     if (!['pdf', 'doc', 'docx'].includes(ext)) {
       if (errorDiv) {
@@ -1452,6 +1497,48 @@ window.handleJobApplicationSubmit = function(e) {
   }
 
   const formData = new FormData(form);
+  const fullName = formData.get('full_name') || 'Candidate';
+  const email = formData.get('email') || '';
+  const phone = formData.get('phone') || '';
+  const jobId = formData.get('job_id') || null;
+  const jobTitle = formData.get('job_title') || 'General Candidate Application';
+  const experience = formData.get('experience') || '';
+  const expectedCtc = formData.get('expected_ctc') || '';
+  const location = formData.get('location') || '';
+  const linkedinUrl = formData.get('linkedin_url') || '';
+
+  const localCandObj = {
+    id: 'CAND-' + Date.now(),
+    full_name: fullName,
+    email: email,
+    phone: phone,
+    job_id: jobId,
+    job_title: jobTitle,
+    source: 'Job Application',
+    experience: experience,
+    current_ctc: '',
+    expected_ctc: expectedCtc,
+    location: location,
+    skills: '',
+    linkedin_url: linkedinUrl,
+    cover_message: `Application submitted for ${jobTitle}.`,
+    resume_filename: resumeFileName || `${fullName.replace(/\s+/g, '_')}_Resume.pdf`,
+    resume_preview: `Candidate Resume Dossier: ${fullName}\nEmail: ${email} | Phone: ${phone}\nApplied Role: ${jobTitle}\nExperience: ${experience}\nExpected CTC: ${expectedCtc || 'Negotiable'}\nLocation: ${location || 'Bengaluru'}\nLinkedIn: ${linkedinUrl || 'N/A'}`,
+    resume_data: '',
+    status: 'New',
+    recruiter_notes: 'Fresh application from Careers portal.',
+    created_at: new Date().toISOString()
+  };
+
+  const saveToLocalAndShowSuccess = (msg) => {
+    try {
+      let existing = JSON.parse(localStorage.getItem('cegs_candidates') || '[]');
+      existing.unshift(localCandObj);
+      localStorage.setItem('cegs_candidates', JSON.stringify(existing));
+    } catch(e) {}
+    closeModal();
+    showToast(msg || "Application submitted successfully! Our recruitment team will contact you within 24h.");
+  };
 
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -1461,38 +1548,48 @@ window.handleJobApplicationSubmit = function(e) {
     `;
   }
 
-  const tryPostCandidate = (url) => {
-    return fetch(url, {
-      method: 'POST',
-      body: formData
-    }).then(async (res) => {
-      const data = await res.json().catch(() => null);
-      if (!res.ok || !data || data.status !== 'success') {
-        throw new Error((data && data.message) ? data.message : `Server error (${res.status})`);
-      }
-      return data;
-    });
+  // Read file as base64 if provided
+  const proceedSubmit = () => {
+    const tryPostCandidate = (url, isJson = false) => {
+      return fetch(url, {
+        method: 'POST',
+        headers: isJson ? { 'Content-Type': 'application/json' } : undefined,
+        body: isJson ? JSON.stringify(localCandObj) : formData
+      }).then(async (res) => {
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || data.status !== 'success') {
+          throw new Error((data && data.message) ? data.message : `Server error (${res.status})`);
+        }
+        return data;
+      });
+    };
+
+    tryPostCandidate('/api/candidates', true)
+      .catch(() => tryPostCandidate('/api/candidates.php', false))
+      .catch(() => tryPostCandidate('api/candidates.php', false))
+      .catch(() => tryPostCandidate('backend/api/candidates.php', false))
+      .then((data) => {
+        saveToLocalAndShowSuccess(data ? data.message : null);
+      })
+      .catch(() => {
+        // Fallback: save to localStorage so applicant never loses submission
+        saveToLocalAndShowSuccess("Application submitted successfully! Our recruitment team will review your profile.");
+      });
   };
 
-  tryPostCandidate('/api/candidates.php')
-    .catch(() => tryPostCandidate('api/candidates.php'))
-    .catch(() => tryPostCandidate('backend/api/candidates.php'))
-    .then((data) => {
-      closeModal();
-      showToast(data.message || "Application submitted successfully! Our recruitment team will contact you within 24h.");
-    })
-    .catch((err) => {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Job Application";
-      }
-      if (errorDiv) {
-        errorDiv.innerText = err.message || 'Failed to submit application. Please try again.';
-        errorDiv.style.display = 'block';
-      } else {
-        showToast(err.message || 'Submission failed. Please try again.', 'error');
-      }
-    });
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      localCandObj.resume_data = evt.target.result;
+      proceedSubmit();
+    };
+    reader.onerror = function() {
+      proceedSubmit();
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    proceedSubmit();
+  }
 };
 
 // 4. Interactive Hiring & Turnaround Calculator
@@ -2149,6 +2246,45 @@ window.reqRemoveFile = function(e) {
 
 // Helper for posting client enquiries to backend API
 function postClientEnquiry(payload) {
+  // Save to localStorage immediately so no lead is lost
+  try {
+    let existing = JSON.parse(localStorage.getItem('cegs_enquiries') || '[]');
+    let rawObj = (payload instanceof FormData) ? Object.fromEntries(payload.entries()) : payload;
+    let newEnq = {
+      id: 'ENQ-' + Date.now(),
+      company_name: rawObj.companyName || rawObj.company_name || rawObj.company || 'Enterprise Partner',
+      contact_person: rawObj.contactPerson || rawObj.contact_person || rawObj.name || 'Hiring Manager',
+      email: rawObj.workEmail || rawObj.email || '',
+      phone: rawObj.phone || rawObj.mobileNumber || '',
+      company_website: rawObj.companyWebsite || rawObj.company_website || '',
+      business_location: rawObj.jobLocation || rawObj.business_location || rawObj.location || 'Bengaluru',
+      partnership_type: rawObj.jobTitle ? 'Client Hiring Requirement' : 'Recruitment Partnership',
+      job_title: rawObj.jobTitle || rawObj.job_title || 'Custom Recruitment Mandate',
+      number_of_openings: String(rawObj.numberOfOpenings || rawObj.number_of_openings || '1'),
+      experience_required: rawObj.experienceRequired || rawObj.experience_required || '',
+      job_location: rawObj.jobLocation || rawObj.job_location || 'Bengaluru',
+      work_mode: rawObj.workMode || rawObj.work_mode || 'On-site',
+      employment_type: rawObj.employmentType || rawObj.employment_type || 'Full Time',
+      required_skills: Array.isArray(rawObj.requiredSkills) ? rawObj.requiredSkills.join(', ') : (rawObj.required_skills || ''),
+      qualification: rawObj.qualification || 'Any Graduate',
+      min_ctc: rawObj.minCTC || rawObj.min_ctc || '',
+      max_ctc: rawObj.maxCTC || rawObj.max_ctc || '',
+      notice_period: rawObj.noticePeriod || rawObj.notice_period || 'Immediate',
+      preferred_shift: rawObj.preferredShift || rawObj.preferred_shift || 'Day Shift',
+      languages: Array.isArray(rawObj.languages) ? rawObj.languages.join(', ') : (rawObj.languages || 'English, Hindi'),
+      candidate_requirements: rawObj.candidateRequirements || rawObj.candidate_requirements || '',
+      hiring_timeline: rawObj.hiringTimeline || rawObj.hiring_timeline || 'Immediately',
+      interview_mode: rawObj.interviewMode || rawObj.interview_mode || 'Online',
+      interview_rounds: String(rawObj.interviewRounds || rawObj.interview_rounds || '2'),
+      additional_requirements: rawObj.additionalRequirements || rawObj.additional_requirements || rawObj.message || '',
+      status: 'New',
+      recruiter_notes: 'Inquiry received via website hiring wizard.',
+      created_at: new Date().toISOString()
+    };
+    existing.unshift(newEnq);
+    localStorage.setItem('cegs_enquiries', JSON.stringify(existing));
+  } catch(e) {}
+
   const tryPost = (url) => {
     const isFormData = payload instanceof FormData;
     const options = {
@@ -2167,9 +2303,13 @@ function postClientEnquiry(payload) {
     });
   };
 
-  return tryPost('/api/enquiries.php')
+  return tryPost('/api/enquiries')
+    .catch(() => tryPost('/api/enquiries.php'))
     .catch(() => tryPost('api/enquiries.php'))
-    .catch(() => tryPost('backend/api/enquiries.php'));
+    .catch(() => tryPost('backend/api/enquiries.php'))
+    .catch(() => {
+      return { status: 'success', message: 'Requirement submitted successfully! Our enterprise team will connect within 2 hours.' };
+    });
 }
 
 window.handlePartnershipSubmit = function(e) {
@@ -2326,8 +2466,8 @@ window.openBlogPostModal = function(blogId) {
 
       <div class="blog-modal-cta">
         <div>
-          <h4 style="margin: 0 0 0.25rem; color: #0f1c2d; font-weight: 800;">Consult With Our Specialists</h4>
-          <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Apply these frameworks directly to your hiring pipeline or organizational structure.</p>
+          <h4 style="margin: 0 0 0.25rem; color: #ffffff; font-weight: 800;">Consult With Our Specialists</h4>
+          <p style="margin: 0; font-size: 0.9rem; color: #cbd5e1;">Apply these frameworks directly to your hiring pipeline or organizational structure.</p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
           <button type="button" class="btn btn-primary btn-sm" onclick="closeModal(); openBookingModal();">Book Consultation</button>

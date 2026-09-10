@@ -46,13 +46,16 @@ function initStickyHeader() {
   const header = document.querySelector('.site-header');
   if (!header) return;
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) {
+  const handleScroll = () => {
+    if (window.scrollY > 25) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
-  });
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
 }
 
 // Multi-Page Hash Router with Dedicated View Switching & Sub-Services
