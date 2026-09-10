@@ -1,5 +1,11 @@
 {
   "name": "cegs-careers-site",
   "version": "3.0.0",
-  "private": true
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'Static build complete'",
+    "dev": "node local-dev-server.js",
+    "start": "node local-dev-server.js"
+  }
 }
